@@ -4,11 +4,11 @@
 #include <iostream>
 
 int main() {
-    constexpr int thread_count = 10;
-    constexpr int logs_per_thread = 10000;
+    constexpr int thread_count = 24;
+    constexpr int logs_per_thread = 100000;
 
     // 拿到全局logger实例（构造时已经start了）
-    AsyncLogger& logger = AsyncLogger::instance();
+    AsyncLogger& logger = AsyncLogger::instance("/home/olivercai/personal/CCcloud/logs/");
 
     std::vector<std::thread> threads;
 
@@ -16,7 +16,9 @@ int main() {
     for (int i = 0; i < thread_count; ++i) {
         threads.emplace_back([i, &logger]() {
             for (int j = 0; j < logs_per_thread; ++j) {
-                logger.append(LogEntry(Level::INFO, "Thread " + std::to_string(i) + " log " + std::to_string(j)));
+                std::ostringstream oss;
+                oss << "Hahaha! *** Thread " << i << " log " << j << " ***";
+                logger.append(LogEntry(Level::INFO, oss.str()));
             }
         });
     }

@@ -37,6 +37,10 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
   /usr/include/c++/13/bits/exception.h \
   /usr/include/c++/13/bits/exception_defines.h \
   /usr/include/c++/13/bits/exception_ptr.h \
+  /usr/include/c++/13/bits/fs_dir.h \
+  /usr/include/c++/13/bits/fs_fwd.h \
+  /usr/include/c++/13/bits/fs_ops.h \
+  /usr/include/c++/13/bits/fs_path.h \
   /usr/include/c++/13/bits/fstream.tcc \
   /usr/include/c++/13/bits/functexcept.h \
   /usr/include/c++/13/bits/functional_hash.h \
@@ -113,6 +117,7 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
   /usr/include/c++/13/chrono \
   /usr/include/c++/13/climits \
   /usr/include/c++/13/clocale \
+  /usr/include/c++/13/codecvt \
   /usr/include/c++/13/compare \
   /usr/include/c++/13/concepts \
   /usr/include/c++/13/condition_variable \
@@ -133,6 +138,7 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
   /usr/include/c++/13/ext/numeric_traits.h \
   /usr/include/c++/13/ext/string_conversions.h \
   /usr/include/c++/13/ext/type_traits.h \
+  /usr/include/c++/13/filesystem \
   /usr/include/c++/13/format \
   /usr/include/c++/13/fstream \
   /usr/include/c++/13/initializer_list \
@@ -348,11 +354,17 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
 
 /usr/include/x86_64-linux-gnu/bits/uio_lim.h:
 
-/usr/include/c++/13/debug/assertions.h:
+/usr/include/x86_64-linux-gnu/bits/uintn-identity.h:
 
-/usr/include/c++/13/bits/stl_list.h:
+/usr/include/x86_64-linux-gnu/bits/typesizes.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/timer_t.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/time_t.h:
 
 /usr/include/c++/13/ctime:
+
+/usr/include/c++/13/codecvt:
 
 /usr/include/c++/13/concepts:
 
@@ -370,13 +382,15 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
 
 /usr/include/c++/13/cctype:
 
+/usr/include/x86_64-linux-gnu/bits/types/struct_tm.h:
+
+/usr/include/c++/13/ext/atomicity.h:
+
 /usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
 
 /usr/include/c++/13/bits/uses_allocator_args.h:
 
 /usr/include/c++/13/bits/atomic_base.h:
-
-/usr/include/c++/13/exception:
 
 /usr/include/c++/13/bits/uses_allocator.h:
 
@@ -480,7 +494,15 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
 
 /usr/include/c++/13/numbers:
 
+/usr/include/c++/13/bits/move.h:
+
+/usr/include/c++/13/bits/memoryfwd.h:
+
+/usr/include/c++/13/bits/fs_fwd.h:
+
 /usr/include/c++/13/bits/chrono_io.h:
+
+/usr/include/c++/13/bits/fs_ops.h:
 
 /usr/include/c++/13/bits/refwrap.h:
 
@@ -534,13 +556,7 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
 
 /usr/include/c++/13/backward/binders.h:
 
-/usr/include/c++/13/ext/aligned_buffer.h:
-
-/usr/include/locale.h:
-
-/usr/include/c++/13/bits/utility.h:
-
-/usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h:
+/usr/include/c++/13/bits/basic_ios.tcc:
 
 /usr/include/c++/13/optional:
 
@@ -560,10 +576,6 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
 
 /usr/include/alloca.h:
 
-/usr/include/c++/13/ext/atomicity.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct_tm.h:
-
 /usr/include/c++/13/bits/streambuf_iterator.h:
 
 /usr/include/c++/13/ostream:
@@ -571,10 +583,6 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
 /usr/include/c++/13/bits/cpp_type_traits.h:
 
 /usr/include/x86_64-linux-gnu/bits/types.h:
-
-/usr/include/c++/13/bits/move.h:
-
-/usr/include/c++/13/new:
 
 /usr/include/c++/13/bits/alloc_traits.h:
 
@@ -592,6 +600,12 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
 
 /usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h:
 
+/usr/include/c++/13/bits/stl_list.h:
+
+/usr/include/c++/13/debug/assertions.h:
+
+/usr/include/c++/13/filesystem:
+
 /home/olivercai/personal/CCcloud/tests/test_logger.cc:
 
 /usr/include/x86_64-linux-gnu/sys/select.h:
@@ -606,9 +620,7 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
 
 /usr/include/c++/13/mutex:
 
-/usr/include/x86_64-linux-gnu/bits/errno.h:
-
-/usr/include/c++/13/bits/stl_pair.h:
+/usr/include/c++/13/bits/fs_path.h:
 
 /usr/include/c++/13/cstdio:
 
@@ -648,10 +660,6 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
 
 /usr/include/x86_64-linux-gnu/bits/stdlib-float.h:
 
-/usr/include/x86_64-linux-gnu/bits/uintn-identity.h:
-
-/usr/include/c++/13/bits/basic_ios.tcc:
-
 /usr/include/c++/13/bits/functional_hash.h:
 
 /usr/include/errno.h:
@@ -661,6 +669,8 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
 /usr/include/c++/13/bits/uniform_int_dist.h:
 
 /usr/include/c++/13/bits/locale_classes.tcc:
+
+/usr/include/c++/13/bits/fs_dir.h:
 
 /usr/include/x86_64-linux-gnu/bits/confname.h:
 
@@ -674,7 +684,21 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
 
 /usr/include/x86_64-linux-gnu/bits/environments.h:
 
-/usr/include/c++/13/bits/memoryfwd.h:
+/usr/include/c++/13/exception:
+
+/usr/include/c++/13/bits/stl_pair.h:
+
+/usr/include/x86_64-linux-gnu/bits/errno.h:
+
+/usr/include/c++/13/ext/aligned_buffer.h:
+
+/usr/include/locale.h:
+
+/usr/include/c++/13/bits/utility.h:
+
+/usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h:
+
+/usr/include/c++/13/new:
 
 /usr/include/c++/13/ext/concurrence.h:
 
@@ -715,6 +739,10 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
 /home/olivercai/personal/CCcloud/src/logger/async_logger.hpp:
 
 /usr/include/c++/13/istream:
+
+/usr/include/x86_64-linux-gnu/bits/types/wint_t.h:
+
+/usr/include/c++/13/limits:
 
 /usr/include/c++/13/ext/alloc_traits.h:
 
@@ -808,10 +836,6 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
 
 /usr/include/x86_64-linux-gnu/bits/floatn-common.h:
 
-/usr/include/c++/13/limits:
-
-/usr/include/x86_64-linux-gnu/bits/types/wint_t.h:
-
 /usr/include/x86_64-linux-gnu/bits/getopt_core.h:
 
 /usr/include/x86_64-linux-gnu/bits/local_lim.h:
@@ -836,9 +860,9 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
 
 /usr/include/x86_64-linux-gnu/bits/semaphore.h:
 
-/usr/include/x86_64-linux-gnu/bits/getopt_posix.h:
-
 /usr/include/time.h:
+
+/usr/include/x86_64-linux-gnu/bits/getopt_posix.h:
 
 /usr/include/x86_64-linux-gnu/bits/setjmp.h:
 
@@ -875,9 +899,3 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
 /usr/include/x86_64-linux-gnu/bits/types/error_t.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/locale_t.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/time_t.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/timer_t.h:
-
-/usr/include/x86_64-linux-gnu/bits/typesizes.h:

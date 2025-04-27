@@ -122,6 +122,7 @@ private:
     alignas(std::hardware_destructive_interference_size) std::atomic<Node*> tail;
     thread_local static EBRManager::ThreadControlBlock* local_tcb;
     std::atomic<long long> size{0};
+    static constexpr int MAX_SIZE = 240000;
 
 public:
     MPMCQueue() {
@@ -143,6 +144,11 @@ public:
     }
 
     void enqueue(T&& item) {
+        while (size.load(std::memory_order_relaxed) >= MAX_SIZE) {
+            // 简单版：如果满了，忙等；可以后面优化成条件变量等待
+            std::this_thread::yield();
+        }
+
         Node* node = new Node(item);
         while (true) {
             Node* last = tail.load(std::memory_order_acquire);
@@ -163,18 +169,6 @@ public:
         if (!local_tcb) local_tcb = EBRManager::instance().register_thread();
         EBRManager::instance().enter_critical(local_tcb);
 
-        // Node* first = head.load(std::memory_order_acquire);
-        // Node* next = first->next.load(std::memory_order_acquire);
-        // if (next == nullptr) {
-        //     EBRManager::instance().exit_critical(local_tcb);
-        //     return false;
-        // }
-        // if (head.compare_exchange_weak(first, next, std::memory_order_release, std::memory_order_relaxed)) {
-        //     result = next->data;
-        //     EBRManager::instance().retire(local_tcb, first);
-        //     EBRManager::instance().exit_critical(local_tcb);
-        //     return true;
-        // }
         while (true){
             Node* first = head.load(std::memory_order_acquire);
             Node* next = first->next.load(std::memory_order_acquire);
