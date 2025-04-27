@@ -1,6 +1,7 @@
 #include <atomic>
 #include <thread>
 #include <mutex>
+#include <list>
 
 static constexpr int RETIRE_THRESHOLD = 64;
 static constexpr int EPOCH_ADVANCE_INTERVAL_MS = 100;
@@ -74,7 +75,6 @@ private:
     std::atomic<int> global_epoch{0};
     std::atomic<bool> stop_flag{false};
     std::thread reclaimer;
-    std::atomic<long long> size{0};
 
     void try_advance_epoch() {
         int cur = global_epoch.load(std::memory_order_acquire);
@@ -118,9 +118,10 @@ private:
         explicit Node(const T& d) : data(d), next(nullptr) {}
     };
 
-    alignas(hardware_destructive_interference_size) std::atomic<Node*> head;
-    alignas(hardware_destructive_interference_size) std::atomic<Node*> tail;
+    alignas(std::hardware_destructive_interference_size) std::atomic<Node*> head;
+    alignas(std::hardware_destructive_interference_size) std::atomic<Node*> tail;
     thread_local static EBRManager::ThreadControlBlock* local_tcb;
+    std::atomic<long long> size{0};
 
 public:
     MPMCQueue() {
@@ -130,11 +131,15 @@ public:
         EBRManager::instance().start_reclaimer();
     }
 
+    static MPMCQueue<T>& instance() {
+        static MPMCQueue<T> instance;
+        return instance;
+    }
+
     ~MPMCQueue() {
         T tmp;
         while (dequeue(tmp));
         delete head.load(std::memory_order_relaxed);
-        cout << EBRManager::instance().current_epoch() << endl;
     }
 
     void enqueue(T&& item) {

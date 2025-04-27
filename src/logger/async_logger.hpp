@@ -1,5 +1,6 @@
 #pragma once
 #include <thread>
+#include <vector>
 #include <mutex>
 #include <condition_variable>
 #include <fstream>
@@ -11,14 +12,29 @@
 
 #include "tools/lockfreequeue.hpp"
 
+static const int LOGENTRY_BATCH_THRESHOLD = 256; // 批量写入日志的阈值
+static const int LOGENTRY_BATCH_TIMEOUT_MS = 256; // 批量写入日志的超时时间
+
+enum class Level {
+    INFO,
+    WARN,
+    ERROR
+};
 
 struct LogEntry {
     std::chrono::system_clock::time_point timestamp;
-    std::string level;    // INFO, WARN, ERROR
-    std::string message;  // 日志内容
+    Level level;    // INFO, WARN, ERROR
+    std::string message;  
 
-    LogEntry(const std::string& lvl, const std::string& msg)
+    LogEntry(const Level& lvl, const std::string& msg)
         : timestamp(std::chrono::system_clock::now()), level(lvl), message(msg) {}
+
+    LogEntry() : timestamp(std::chrono::system_clock::now()), level(Level::INFO), message("") {}
+
+    LogEntry(const LogEntry&) = default;
+    LogEntry(LogEntry&&) = default;
+    LogEntry& operator=(const LogEntry&) = default;
+    LogEntry& operator=(LogEntry&&) = default;
 };
 
 class AsyncLogger {
@@ -31,14 +47,16 @@ public:
     // 禁止拷贝和赋值
     AsyncLogger(const AsyncLogger&) = delete;
     AsyncLogger& operator=(const AsyncLogger&) = delete;
+    AsyncLogger(AsyncLogger&&) = delete;
+    AsyncLogger& operator=(AsyncLogger&&) = delete;
 
     // 提交日志（生产者接口）
     void append(LogEntry&& entry) {
-        {
-            std::lock_guard<std::mutex> lock(mutex_);
-            log_queue_.enqueue(std::move(entry));
+        MPMCQueue<LogEntry>::instance().enqueue(std::move(entry));
+        if (++unflushed_count_ >= LOGENTRY_BATCH_THRESHOLD) {
+            unflushed_count_ = 0;
+            cv_.notify_one();
         }
-        cv_.notify_one();
     }
 
     // 启动后台线程
@@ -61,7 +79,9 @@ public:
 
 private:
     AsyncLogger(const std::string& file_path)
-        : file_path_(file_path), running_(false) {}
+        : file_path_(file_path), running_(false) {
+            start();
+        }
 
     ~AsyncLogger() {
         stop();
@@ -75,42 +95,62 @@ private:
 
         while (true) {
             std::unique_lock<std::mutex> lock(mutex_);
-            cv_.wait(lock, [this]() { return !running_ || !log_queue_.empty(); });
+            cv_.wait_for(
+                lock, 
+                std::chrono::milliseconds(LOGENTRY_BATCH_TIMEOUT_MS), 
+                [this]() { return !running_ || !MPMCQueue<LogEntry>::instance().empty(); }
+            );
+            lock.unlock();
 
-            while (!log_queue_.empty()) {
-                const LogEntry& entry = log_queue_.front();
-                ofs << format_log_entry(entry) << "\n";
-                log_queue_.pop();
+            std::vector<LogEntry> entries;
+            int cnt = 0;
+            while (!MPMCQueue<LogEntry>::instance().empty() && cnt < LOGENTRY_BATCH_THRESHOLD) {
+                LogEntry entry;
+                if (MPMCQueue<LogEntry>::instance().dequeue(entry)) {
+                    entries.emplace_back(std::move(entry));
+                    cnt++;
+                }
             }
-
+            ofs << format_log_entry(entries);
             ofs.flush();
 
-            if (!running_ && log_queue_.empty()) {
+            if (!running_ && MPMCQueue<LogEntry>::instance().empty()) {
                 break;
             }
         }
     }
 
-    std::string format_log_entry(const LogEntry& entry) {
-        std::time_t t = std::chrono::system_clock::to_time_t(entry.timestamp);
-        std::tm tm_time;
-#if defined(_WIN32) || defined(_WIN64)
-        localtime_s(&tm_time, &t);
-#else
-        localtime_r(&t, &tm_time);
-#endif
+    std::string format_log_entry(const std::vector<LogEntry>& entries) {
         std::ostringstream oss;
-        oss << "[" << std::put_time(&tm_time, "%Y-%m-%d %H:%M:%S") << "]";
-        oss << " [" << entry.level << "] ";
-        oss << entry.message;
+        for (const auto& entry : entries) {
+            std::time_t t = std::chrono::system_clock::to_time_t(entry.timestamp);
+            std::tm tm_time;
+#if defined(_WIN32) || defined(_WIN64)
+            localtime_s(&tm_time, &t);
+#else
+            localtime_r(&t, &tm_time);
+#endif
+            oss << "[" << std::put_time(&tm_time, "%Y-%m-%d %H:%M:%S") << "]";
+            oss << " [" << loglevel_to_string(entry.level) << "] ";
+            oss << entry.message << "\n";
+        }
         return oss.str();
+    }
+
+    std::string loglevel_to_string(const Level& level) {
+        switch (level) {
+            case Level::INFO: return "INFO";
+            case Level::WARN: return "WARN";
+            case Level::ERROR: return "ERROR";
+            default: return "UNKNOWN";
+        }
     }
 
 private:
     std::string file_path_;
-    MPMCQueue<LogEntry> log_queue_;   //TODO: 使用lock-free队列MPMCQueue
     std::mutex mutex_;
     std::condition_variable cv_;
     std::atomic<bool> running_;
+    std::atomic<int> unflushed_count_{0};
     std::thread log_thread_;
 };
