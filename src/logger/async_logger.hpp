@@ -2,7 +2,6 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
-#include <queue>
 #include <fstream>
 #include <string>
 #include <atomic>
@@ -37,7 +36,7 @@ public:
     void append(LogEntry&& entry) {
         {
             std::lock_guard<std::mutex> lock(mutex_);
-            log_queue_.push(std::move(entry));
+            log_queue_.enqueue(std::move(entry));
         }
         cv_.notify_one();
     }
@@ -109,7 +108,7 @@ private:
 
 private:
     std::string file_path_;
-    std::queue<LogEntry> log_queue_;   //TODO: 使用lock-free队列MPMCQueue
+    MPMCQueue<LogEntry> log_queue_;   //TODO: 使用lock-free队列MPMCQueue
     std::mutex mutex_;
     std::condition_variable cv_;
     std::atomic<bool> running_;

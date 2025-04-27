@@ -74,6 +74,7 @@ private:
     std::atomic<int> global_epoch{0};
     std::atomic<bool> stop_flag{false};
     std::thread reclaimer;
+    std::atomic<long long> size{0};
 
     void try_advance_epoch() {
         int cur = global_epoch.load(std::memory_order_acquire);
@@ -136,13 +137,14 @@ public:
         cout << EBRManager::instance().current_epoch() << endl;
     }
 
-    void enqueue(const T& item) {
+    void enqueue(T&& item) {
         Node* node = new Node(item);
         while (true) {
             Node* last = tail.load(std::memory_order_acquire);
             Node* next = last->next.load(std::memory_order_acquire);
             if (next == nullptr) {
                 if (last->next.compare_exchange_weak(next, node, std::memory_order_release, std::memory_order_relaxed)) {
+                    size.fetch_add(1, std::memory_order_relaxed);
                     tail.compare_exchange_weak(last, node, std::memory_order_release, std::memory_order_relaxed);
                     return;
                 }
@@ -176,6 +178,7 @@ public:
             }
             if (head.compare_exchange_strong(first, next, std::memory_order_acq_rel, std::memory_order_relaxed)) {
                 result = next->data;
+                size.fetch_sub(1, std::memory_order_relaxed);
                 EBRManager::instance().retire(local_tcb, first);
                 EBRManager::instance().exit_critical(local_tcb);
                 return true;
@@ -184,6 +187,10 @@ public:
 
         EBRManager::instance().exit_critical(local_tcb);
         return false; // non-blocking: don't retry
+    }
+
+    bool empty() {
+        return size.load(std::memory_order_relaxed) == 0;
     }
 };
 
