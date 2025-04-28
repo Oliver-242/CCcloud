@@ -18,9 +18,9 @@
 #include "tools/BaseQueue.hpp"
 
 #define DEFAULT_LOG_PATH "/home/personal/CCcloud/logs" // 默认日志文件路径
-static constexpr int LOGENTRY_BATCH_THRESHOLD = 1024; // 批量写入日志的阈值
+static constexpr int LOGENTRY_BATCH_THRESHOLD = 2048; // 批量写入日志的阈值
 static constexpr int LOGENTRY_BATCH_TIMEOUT_MS = 256; // 批量写入日志的超时时间
-static constexpr int MAX_LOG_FILE_SIZE = 10 * 1024 * 1024; // 每个日志文件最大大小 10MB
+static constexpr int MAX_LOG_FILE_SIZE = 32 * 1024 * 1024; // 每个日志文件最大大小 10MB
 
 
 enum class Level {

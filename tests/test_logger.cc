@@ -4,16 +4,17 @@
 #include <iostream>
 #include <chrono>
 
-#include "tools/lockfreequeue.hpp"
+// #include "tools/lockfreequeue.hpp"
 #include "tools/RingBuffer.hpp"
+#include "tools/EBRQueue.hpp"
 
 
 int main() {
-    constexpr int thread_count = 24;
+    constexpr int thread_count = 128;
     constexpr int logs_per_thread = 100000;
 
     // 拿到全局logger实例（构造时已经start了）
-    AsyncLogger<LockFreeMPMCQueue<LogEntry>>& logger = AsyncLogger<LockFreeMPMCQueue<LogEntry>>::instance("/home/olivercai/personal/CCcloud/logs/", 240000);
+    AsyncLogger<MPMCQueue<LogEntry>>& logger = AsyncLogger<MPMCQueue<LogEntry>>::instance("/home/olivercai/personal/CCcloud/logs/");
 
     std::vector<std::thread> threads;
     auto start = std::chrono::high_resolution_clock::now();

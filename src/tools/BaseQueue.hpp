@@ -7,7 +7,8 @@ template <typename T>
 class BaseQueue {
 public:
     using value_type = T;
+    virtual ~BaseQueue() = default;
     virtual void enqueue(const T& value) = 0;
     virtual bool dequeue(T& value) = 0;
     virtual bool empty() const = 0;
-}
+};
