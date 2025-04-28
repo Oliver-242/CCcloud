@@ -1,5 +1,0 @@
-/home/olivercai/personal/CCcloud/build/CMakeFiles/edit_cache.dir
-/home/olivercai/personal/CCcloud/build/CMakeFiles/rebuild_cache.dir
-/home/olivercai/personal/CCcloud/build/tests/CMakeFiles/test_logger.dir
-/home/olivercai/personal/CCcloud/build/tests/CMakeFiles/edit_cache.dir
-/home/olivercai/personal/CCcloud/build/tests/CMakeFiles/rebuild_cache.dir
