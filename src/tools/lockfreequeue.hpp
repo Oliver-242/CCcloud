@@ -3,6 +3,8 @@
 #include <mutex>
 #include <list>
 
+#include "BaseQueue.hpp"
+
 static constexpr int RETIRE_THRESHOLD = 64;
 static constexpr int EPOCH_ADVANCE_INTERVAL_MS = 100;
 
@@ -110,7 +112,7 @@ private:
 // MPMCQueue implementation
 
 template<typename T>
-class MPMCQueue {
+class MPMCQueue: public BaseQueue {
 private:
     struct Node : public EBRNodeBase {
         T data;
@@ -122,7 +124,7 @@ private:
     alignas(std::hardware_destructive_interference_size) std::atomic<Node*> tail;
     thread_local static EBRManager::ThreadControlBlock* local_tcb;
     std::atomic<long long> size{0};
-    static constexpr int MAX_SIZE = 240000;
+    static constexpr int MAX_SIZE = 10000;
 
 public:
     MPMCQueue() {
@@ -143,7 +145,7 @@ public:
         delete head.load(std::memory_order_relaxed);
     }
 
-    void enqueue(T&& item) {
+    void enqueue(T&& item) override {
         while (size.load(std::memory_order_relaxed) >= MAX_SIZE) {
             // 简单版：如果满了，忙等；可以后面优化成条件变量等待
             std::this_thread::yield();
@@ -165,7 +167,7 @@ public:
         }
     }
 
-    bool dequeue(T& result) {
+    bool dequeue(T& result) override {
         if (!local_tcb) local_tcb = EBRManager::instance().register_thread();
         EBRManager::instance().enter_critical(local_tcb);
 
@@ -188,7 +190,7 @@ public:
         return false; // non-blocking: don't retry
     }
 
-    bool empty() {
+    bool empty() const override {
         return size.load(std::memory_order_relaxed) == 0;
     }
 };

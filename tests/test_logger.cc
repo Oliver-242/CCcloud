@@ -2,16 +2,21 @@
 #include <thread>
 #include <vector>
 #include <iostream>
+#include <chrono>
+
+#include "tools/lockfreequeue.hpp"
+#include "tools/RingBuffer.hpp"
+
 
 int main() {
     constexpr int thread_count = 24;
     constexpr int logs_per_thread = 100000;
 
     // 拿到全局logger实例（构造时已经start了）
-    AsyncLogger& logger = AsyncLogger::instance("/home/olivercai/personal/CCcloud/logs/");
+    AsyncLogger<LockFreeMPMCQueue<LogEntry>>& logger = AsyncLogger<LockFreeMPMCQueue<LogEntry>>::instance("/home/olivercai/personal/CCcloud/logs/", 240000);
 
     std::vector<std::thread> threads;
-
+    auto start = std::chrono::high_resolution_clock::now();
     // 启动多个生产者线程
     for (int i = 0; i < thread_count; ++i) {
         threads.emplace_back([i, &logger]() {
@@ -30,7 +35,9 @@ int main() {
 
     // 停止Logger（flush剩余日志）
     logger.stop();
-
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
     std::cout << "Test completed: " << (thread_count * logs_per_thread) << " logs written." << std::endl;
+    std::cout << "Time taken: " << duration.count() << " ms" << std::endl;
     return 0;
 }

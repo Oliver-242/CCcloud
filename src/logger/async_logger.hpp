@@ -10,15 +10,15 @@
 #include <sstream>
 #include <iomanip>
 #include <filesystem>
-#define DEBUG
+// #define DEBUG
 #ifdef DEBUG
 #include <iostream>
 #endif
 
-#include "tools/lockfreequeue.hpp"
+#include "tools/BaseQueue.hpp"
 
 #define DEFAULT_LOG_PATH "/home/personal/CCcloud/logs" // 默认日志文件路径
-static constexpr int LOGENTRY_BATCH_THRESHOLD = 512; // 批量写入日志的阈值
+static constexpr int LOGENTRY_BATCH_THRESHOLD = 1024; // 批量写入日志的阈值
 static constexpr int LOGENTRY_BATCH_TIMEOUT_MS = 256; // 批量写入日志的超时时间
 static constexpr int MAX_LOG_FILE_SIZE = 10 * 1024 * 1024; // 每个日志文件最大大小 10MB
 
@@ -45,10 +45,20 @@ struct LogEntry {
     LogEntry& operator=(LogEntry&&) = default;
 };
 
+template <typename T>
+concept HasValueType = requires {
+    typename T::value_type;
+};
+
+template <typename T>
+concept DerivedFromBaseQueue = HasValueType<T> && std::is_base_of_v<BaseQueue<typename T::value_type>, T>;
+
+template <DerivedFromBaseQueue Q>
 class AsyncLogger {
 public:
-    static AsyncLogger& instance(const std::string& file_path = DEFAULT_LOG_PATH) {
-        static AsyncLogger logger(file_path);
+    template <typename... Args>
+    static AsyncLogger& instance(const std::string& file_path = DEFAULT_LOG_PATH, Args&&... args) {
+        static AsyncLogger logger(file_path, std::forward<Args>(args)...);
         return logger;
     }
 
@@ -85,8 +95,9 @@ public:
     }
 
 private:
-    AsyncLogger(const std::string& file_path)
-        : file_path_(file_path), running_(false), current_file_index_(1), log_queue_(MPMCQueue<LogEntry>::instance()) {
+    template <typename... Args>
+    AsyncLogger(const std::string& file_path, Args&&... args)
+        : file_path_(file_path), running_(false), current_file_index_(1), log_queue_(Q::instance(std::forward<Args>(args)...)) {
         namespace fs = std::filesystem;
         if (!fs::exists(file_path) || !fs::is_directory(file_path)) {
             if (!fs::create_directories(file_path)) {
@@ -127,8 +138,8 @@ private:
             if (ec) {
                 throw std::runtime_error("Failed to get file size: " + (date_dir / (std::to_string(current_file_index_) + ".txt")).string());
             }
+
             if (f_size >= MAX_LOG_FILE_SIZE) {
-                std::cout << "File size exceeded, creating new file." << std::endl;
                 ++current_file_index_;
                 std::ofstream ofs((date_dir / (std::to_string(current_file_index_) + ".txt")).string(), std::ios::app);
                 if (!ofs.is_open()) {
@@ -137,6 +148,7 @@ private:
                 ofs.close();
                 return (date_dir / (std::to_string(current_file_index_) + ".txt")).string();
             }
+
             return (date_dir / (std::to_string(current_file_index_) + ".txt")).string();
         }
     }
@@ -171,10 +183,12 @@ private:
                     cnt++;
                 }
             }
-
+#ifdef DEBUG
+            std::cout << "Flushing " << entries.size() << " log entries." << std::endl;
+#endif
             ofs << format_log_entry(entries);
             ofs.flush();
-
+            ofs.close();
             if (!running_ && log_queue_.empty()) {
                 break;
             }
@@ -210,7 +224,7 @@ private:
 private:
     std::string file_path_;
     std::mutex mutex_;
-    MPMCQueue<LogEntry>& log_queue_;
+    Q& log_queue_;
     std::condition_variable cv_;
     std::atomic<bool> running_;
     std::atomic<int> unflushed_count_{0};

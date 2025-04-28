@@ -4,6 +4,8 @@
 tests/CMakeFiles/test_logger.dir/test_logger.cc.o
  /home/olivercai/personal/CCcloud/tests/test_logger.cc
  /home/olivercai/personal/CCcloud/src/logger/async_logger.hpp
+ /home/olivercai/personal/CCcloud/src/tools/BaseQueue.hpp
+ /home/olivercai/personal/CCcloud/src/tools/RingBuffer.hpp
  /home/olivercai/personal/CCcloud/src/tools/lockfreequeue.hpp
  /usr/include/alloca.h
  /usr/include/asm-generic/errno-base.h

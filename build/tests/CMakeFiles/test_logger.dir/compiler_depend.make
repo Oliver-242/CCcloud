@@ -3,6 +3,8 @@
 
 tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcloud/tests/test_logger.cc \
   /home/olivercai/personal/CCcloud/src/logger/async_logger.hpp \
+  /home/olivercai/personal/CCcloud/src/tools/BaseQueue.hpp \
+  /home/olivercai/personal/CCcloud/src/tools/RingBuffer.hpp \
   /home/olivercai/personal/CCcloud/src/tools/lockfreequeue.hpp \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
@@ -500,9 +502,25 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
 
 /usr/include/c++/13/bits/fs_fwd.h:
 
+/usr/include/c++/13/cerrno:
+
+/usr/include/x86_64-linux-gnu/bits/stdint-least.h:
+
+/usr/include/c++/13/bits/unique_ptr.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h:
+
+/usr/include/c++/13/bits/stl_list.h:
+
+/usr/include/c++/13/debug/assertions.h:
+
 /usr/include/c++/13/bits/chrono_io.h:
 
-/usr/include/c++/13/bits/fs_ops.h:
+/usr/include/c++/13/bits/invoke.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/13/include/stddef.h:
+
+/usr/include/x86_64-linux-gnu/bits/environments.h:
 
 /usr/include/c++/13/bits/refwrap.h:
 
@@ -510,19 +528,7 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
 
 /usr/include/c++/13/bits/fstream.tcc:
 
-/usr/include/c++/13/bits/locale_conv.h:
-
-/usr/include/c++/13/bits/istream.tcc:
-
-/usr/include/c++/13/bits/exception_ptr.h:
-
-/usr/include/x86_64-linux-gnu/c++/13/bits/ctype_inline.h:
-
-/usr/include/c++/13/bits/char_traits.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/13/include/syslimits.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/clock_t.h:
+/home/olivercai/personal/CCcloud/src/tools/RingBuffer.hpp:
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/limits.h:
 
@@ -538,19 +544,9 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
 
 /usr/include/libintl.h:
 
-/usr/include/c++/13/bits/chrono.h:
-
-/usr/include/x86_64-linux-gnu/bits/endianness.h:
-
 /usr/include/c++/13/atomic:
 
 /usr/include/c++/13/bits/locale_facets.h:
-
-/usr/include/c++/13/bits/stl_vector.h:
-
-/usr/include/c++/13/bits/stl_tempbuf.h:
-
-/usr/include/c++/13/bits/codecvt.h:
 
 /usr/include/c++/13/charconv:
 
@@ -558,9 +554,17 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
 
 /usr/include/c++/13/bits/basic_ios.tcc:
 
-/usr/include/c++/13/optional:
+/usr/include/c++/13/bits/alloc_traits.h:
 
-/usr/include/c++/13/bits/vector.tcc:
+/usr/include/c++/13/bits/concept_check.h:
+
+/usr/include/x86_64-linux-gnu/bits/long-double.h:
+
+/usr/include/c++/13/bits/algorithmfwd.h:
+
+/usr/include/c++/13/filesystem:
+
+/home/olivercai/personal/CCcloud/tests/test_logger.cc:
 
 /usr/include/c++/13/variant:
 
@@ -584,33 +588,33 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
 
 /usr/include/x86_64-linux-gnu/bits/types.h:
 
-/usr/include/c++/13/bits/alloc_traits.h:
+/usr/include/x86_64-linux-gnu/bits/endianness.h:
 
-/usr/include/c++/13/bits/concept_check.h:
+/usr/include/c++/13/bits/chrono.h:
 
-/usr/include/x86_64-linux-gnu/bits/long-double.h:
+/usr/include/c++/13/bits/fs_ops.h:
 
-/usr/include/c++/13/bits/algorithmfwd.h:
+/usr/include/x86_64-linux-gnu/c++/13/bits/ctype_inline.h:
 
-/usr/include/c++/13/cerrno:
+/usr/include/c++/13/bits/char_traits.h:
 
-/usr/include/x86_64-linux-gnu/bits/stdint-least.h:
+/usr/lib/gcc/x86_64-linux-gnu/13/include/syslimits.h:
 
-/usr/include/c++/13/bits/unique_ptr.h:
+/usr/include/x86_64-linux-gnu/bits/types/clock_t.h:
 
-/usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h:
+/usr/include/c++/13/bits/exception_ptr.h:
 
-/usr/include/c++/13/bits/stl_list.h:
+/usr/include/c++/13/bits/vector.tcc:
 
-/usr/include/c++/13/debug/assertions.h:
+/usr/include/c++/13/optional:
 
-/usr/include/c++/13/filesystem:
+/home/olivercai/personal/CCcloud/src/tools/BaseQueue.hpp:
 
-/home/olivercai/personal/CCcloud/tests/test_logger.cc:
+/usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
 
-/usr/include/x86_64-linux-gnu/sys/select.h:
+/usr/include/c++/13/bits/stringfwd.h:
 
-/usr/include/c++/13/cwchar:
+/usr/include/c++/13/bits/iterator_concepts.h:
 
 /usr/include/c++/13/bits/hash_bytes.h:
 
@@ -626,10 +630,6 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
 
-/usr/include/c++/13/bits/stringfwd.h:
-
-/usr/include/c++/13/bits/iterator_concepts.h:
-
 /home/olivercai/personal/CCcloud/src/tools/lockfreequeue.hpp:
 
 /usr/include/wchar.h:
@@ -639,6 +639,16 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
 /usr/include/c++/13/bits/basic_ios.h:
 
 /usr/include/x86_64-linux-gnu/bits/time64.h:
+
+/usr/include/c++/13/bits/stl_vector.h:
+
+/usr/include/c++/13/bits/stl_tempbuf.h:
+
+/usr/include/c++/13/bits/codecvt.h:
+
+/usr/include/c++/13/bits/istream.tcc:
+
+/usr/include/c++/13/bits/locale_conv.h:
 
 /usr/include/c++/13/bits/cxxabi_forced.h:
 
@@ -678,11 +688,13 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
 
 /usr/include/c++/13/bits/locale_facets_nonio.tcc:
 
-/usr/include/c++/13/bits/invoke.h:
+/usr/include/x86_64-linux-gnu/sys/select.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/13/include/stddef.h:
+/usr/include/c++/13/cwchar:
 
-/usr/include/x86_64-linux-gnu/bits/environments.h:
+/usr/include/linux/errno.h:
+
+/usr/include/c++/13/debug/debug.h:
 
 /usr/include/c++/13/exception:
 
@@ -702,9 +714,9 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
 
 /usr/include/c++/13/ext/concurrence.h:
 
-/usr/include/c++/13/bits/stl_iterator.h:
-
 /usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h:
+
+/usr/include/c++/13/bits/stl_iterator.h:
 
 /usr/include/c++/13/ext/numeric_traits.h:
 
@@ -785,12 +797,6 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: /home/olivercai/personal/CCcl
 /usr/include/features.h:
 
 /usr/include/linux/close_range.h:
-
-/usr/include/c++/13/debug/debug.h:
-
-/usr/include/linux/errno.h:
-
-/usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
 
 /usr/include/c++/13/ratio:
 

@@ -231,7 +231,9 @@ tests/CMakeFiles/test_logger.dir/test_logger.cc.o: \
  /usr/include/c++/13/filesystem /usr/include/c++/13/bits/fs_fwd.h \
  /usr/include/c++/13/bits/fs_path.h /usr/include/c++/13/codecvt \
  /usr/include/c++/13/bits/fs_dir.h /usr/include/c++/13/bits/fs_ops.h \
+ /home/olivercai/personal/CCcloud/src/tools/BaseQueue.hpp \
  /usr/include/c++/13/iostream \
  /home/olivercai/personal/CCcloud/src/tools/lockfreequeue.hpp \
  /usr/include/c++/13/list /usr/include/c++/13/bits/stl_list.h \
- /usr/include/c++/13/bits/list.tcc
+ /usr/include/c++/13/bits/list.tcc \
+ /home/olivercai/personal/CCcloud/src/tools/RingBuffer.hpp
