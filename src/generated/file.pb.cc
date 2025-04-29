@@ -20,7 +20,7 @@ PROTOBUF_PRAGMA_INIT_SEG
 namespace _pb = ::google::protobuf;
 namespace _pbi = ::google::protobuf::internal;
 namespace _fl = ::google::protobuf::internal::field_layout;
-namespace ncloud {
+namespace CCcloud {
 
 inline constexpr UploadResponse::Impl_::Impl_(
     ::_pbi::ConstantInitialized) noexcept
@@ -152,7 +152,7 @@ struct DeleteRequestDefaultTypeInternal {
 
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
     PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 DeleteRequestDefaultTypeInternal _DeleteRequest_default_instance_;
-}  // namespace ncloud
+}  // namespace CCcloud
 static ::_pb::Metadata file_level_metadata_file_2eproto[6];
 static constexpr const ::_pb::EnumDescriptor**
     file_level_enum_descriptors_file_2eproto = nullptr;
@@ -161,101 +161,102 @@ static constexpr const ::_pb::ServiceDescriptor**
 const ::uint32_t TableStruct_file_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
     protodesc_cold) = {
     ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::ncloud::UploadChunk, _internal_metadata_),
+    PROTOBUF_FIELD_OFFSET(::CCcloud::UploadChunk, _internal_metadata_),
     ~0u,  // no _extensions_
     ~0u,  // no _oneof_case_
     ~0u,  // no _weak_field_map_
     ~0u,  // no _inlined_string_donated_
     ~0u,  // no _split_
     ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::ncloud::UploadChunk, _impl_.filename_),
-    PROTOBUF_FIELD_OFFSET(::ncloud::UploadChunk, _impl_.data_),
+    PROTOBUF_FIELD_OFFSET(::CCcloud::UploadChunk, _impl_.filename_),
+    PROTOBUF_FIELD_OFFSET(::CCcloud::UploadChunk, _impl_.data_),
     ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::ncloud::UploadResponse, _internal_metadata_),
+    PROTOBUF_FIELD_OFFSET(::CCcloud::UploadResponse, _internal_metadata_),
     ~0u,  // no _extensions_
     ~0u,  // no _oneof_case_
     ~0u,  // no _weak_field_map_
     ~0u,  // no _inlined_string_donated_
     ~0u,  // no _split_
     ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::ncloud::UploadResponse, _impl_.success_),
-    PROTOBUF_FIELD_OFFSET(::ncloud::UploadResponse, _impl_.message_),
+    PROTOBUF_FIELD_OFFSET(::CCcloud::UploadResponse, _impl_.success_),
+    PROTOBUF_FIELD_OFFSET(::CCcloud::UploadResponse, _impl_.message_),
     ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::ncloud::DownloadRequest, _internal_metadata_),
+    PROTOBUF_FIELD_OFFSET(::CCcloud::DownloadRequest, _internal_metadata_),
     ~0u,  // no _extensions_
     ~0u,  // no _oneof_case_
     ~0u,  // no _weak_field_map_
     ~0u,  // no _inlined_string_donated_
     ~0u,  // no _split_
     ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::ncloud::DownloadRequest, _impl_.filename_),
+    PROTOBUF_FIELD_OFFSET(::CCcloud::DownloadRequest, _impl_.filename_),
     ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::ncloud::DownloadChunk, _internal_metadata_),
+    PROTOBUF_FIELD_OFFSET(::CCcloud::DownloadChunk, _internal_metadata_),
     ~0u,  // no _extensions_
     ~0u,  // no _oneof_case_
     ~0u,  // no _weak_field_map_
     ~0u,  // no _inlined_string_donated_
     ~0u,  // no _split_
     ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::ncloud::DownloadChunk, _impl_.data_),
+    PROTOBUF_FIELD_OFFSET(::CCcloud::DownloadChunk, _impl_.data_),
     ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::ncloud::DeleteRequest, _internal_metadata_),
+    PROTOBUF_FIELD_OFFSET(::CCcloud::DeleteRequest, _internal_metadata_),
     ~0u,  // no _extensions_
     ~0u,  // no _oneof_case_
     ~0u,  // no _weak_field_map_
     ~0u,  // no _inlined_string_donated_
     ~0u,  // no _split_
     ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::ncloud::DeleteRequest, _impl_.filename_),
+    PROTOBUF_FIELD_OFFSET(::CCcloud::DeleteRequest, _impl_.filename_),
     ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::ncloud::DeleteResponse, _internal_metadata_),
+    PROTOBUF_FIELD_OFFSET(::CCcloud::DeleteResponse, _internal_metadata_),
     ~0u,  // no _extensions_
     ~0u,  // no _oneof_case_
     ~0u,  // no _weak_field_map_
     ~0u,  // no _inlined_string_donated_
     ~0u,  // no _split_
     ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::ncloud::DeleteResponse, _impl_.success_),
-    PROTOBUF_FIELD_OFFSET(::ncloud::DeleteResponse, _impl_.message_),
+    PROTOBUF_FIELD_OFFSET(::CCcloud::DeleteResponse, _impl_.success_),
+    PROTOBUF_FIELD_OFFSET(::CCcloud::DeleteResponse, _impl_.message_),
 };
 
 static const ::_pbi::MigrationSchema
     schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-        {0, -1, -1, sizeof(::ncloud::UploadChunk)},
-        {10, -1, -1, sizeof(::ncloud::UploadResponse)},
-        {20, -1, -1, sizeof(::ncloud::DownloadRequest)},
-        {29, -1, -1, sizeof(::ncloud::DownloadChunk)},
-        {38, -1, -1, sizeof(::ncloud::DeleteRequest)},
-        {47, -1, -1, sizeof(::ncloud::DeleteResponse)},
+        {0, -1, -1, sizeof(::CCcloud::UploadChunk)},
+        {10, -1, -1, sizeof(::CCcloud::UploadResponse)},
+        {20, -1, -1, sizeof(::CCcloud::DownloadRequest)},
+        {29, -1, -1, sizeof(::CCcloud::DownloadChunk)},
+        {38, -1, -1, sizeof(::CCcloud::DeleteRequest)},
+        {47, -1, -1, sizeof(::CCcloud::DeleteResponse)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
-    &::ncloud::_UploadChunk_default_instance_._instance,
-    &::ncloud::_UploadResponse_default_instance_._instance,
-    &::ncloud::_DownloadRequest_default_instance_._instance,
-    &::ncloud::_DownloadChunk_default_instance_._instance,
-    &::ncloud::_DeleteRequest_default_instance_._instance,
-    &::ncloud::_DeleteResponse_default_instance_._instance,
+    &::CCcloud::_UploadChunk_default_instance_._instance,
+    &::CCcloud::_UploadResponse_default_instance_._instance,
+    &::CCcloud::_DownloadRequest_default_instance_._instance,
+    &::CCcloud::_DownloadChunk_default_instance_._instance,
+    &::CCcloud::_DeleteRequest_default_instance_._instance,
+    &::CCcloud::_DeleteResponse_default_instance_._instance,
 };
 const char descriptor_table_protodef_file_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-    "\n\nfile.proto\022\006ncloud\"-\n\013UploadChunk\022\020\n\010f"
-    "ilename\030\001 \001(\t\022\014\n\004data\030\002 \001(\014\"2\n\016UploadRes"
-    "ponse\022\017\n\007success\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\""
-    "#\n\017DownloadRequest\022\020\n\010filename\030\001 \001(\t\"\035\n\r"
-    "DownloadChunk\022\014\n\004data\030\001 \001(\014\"!\n\rDeleteReq"
-    "uest\022\020\n\010filename\030\001 \001(\t\"2\n\016DeleteResponse"
-    "\022\017\n\007success\030\001 \001(\010\022\017\n\007message\030\002 \001(\t2\275\001\n\013F"
-    "ileService\0227\n\006Upload\022\023.ncloud.UploadChun"
-    "k\032\026.ncloud.UploadResponse(\001\022<\n\010Download\022"
-    "\027.ncloud.DownloadRequest\032\025.ncloud.Downlo"
-    "adChunk0\001\0227\n\006Delete\022\025.ncloud.DeleteReque"
-    "st\032\026.ncloud.DeleteResponseb\006proto3"
+    "\n\nfile.proto\022\007CCcloud\"-\n\013UploadChunk\022\020\n\010"
+    "filename\030\001 \001(\t\022\014\n\004data\030\002 \001(\014\"2\n\016UploadRe"
+    "sponse\022\017\n\007success\030\001 \001(\010\022\017\n\007message\030\002 \001(\t"
+    "\"#\n\017DownloadRequest\022\020\n\010filename\030\001 \001(\t\"\035\n"
+    "\rDownloadChunk\022\014\n\004data\030\001 \001(\014\"!\n\rDeleteRe"
+    "quest\022\020\n\010filename\030\001 \001(\t\"2\n\016DeleteRespons"
+    "e\022\017\n\007success\030\001 \001(\010\022\017\n\007message\030\002 \001(\t2\303\001\n\013"
+    "FileService\0229\n\006Upload\022\024.CCcloud.UploadCh"
+    "unk\032\027.CCcloud.UploadResponse(\001\022>\n\010Downlo"
+    "ad\022\030.CCcloud.DownloadRequest\032\026.CCcloud.D"
+    "ownloadChunk0\001\0229\n\006Delete\022\026.CCcloud.Delet"
+    "eRequest\032\027.CCcloud.DeleteResponseb\006proto"
+    "3"
 };
 static ::absl::once_flag descriptor_table_file_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_file_2eproto = {
     false,
     false,
-    474,
+    481,
     descriptor_table_protodef_file_2eproto,
     "file.proto",
     &descriptor_table_file_2eproto_once,
@@ -287,7 +288,7 @@ PROTOBUF_ATTRIBUTE_WEAK const ::_pbi::DescriptorTable* descriptor_table_file_2ep
 // Force running AddDescriptors() at dynamic initialization time.
 PROTOBUF_ATTRIBUTE_INIT_PRIORITY2
 static ::_pbi::AddDescriptorsRunner dynamic_init_dummy_file_2eproto(&descriptor_table_file_2eproto);
-namespace ncloud {
+namespace CCcloud {
 // ===================================================================
 
 class UploadChunk::_Internal {
@@ -297,7 +298,7 @@ class UploadChunk::_Internal {
 UploadChunk::UploadChunk(::google::protobuf::Arena* arena)
     : ::google::protobuf::Message(arena) {
   SharedCtor(arena);
-  // @@protoc_insertion_point(arena_constructor:ncloud.UploadChunk)
+  // @@protoc_insertion_point(arena_constructor:CCcloud.UploadChunk)
 }
 inline PROTOBUF_NDEBUG_INLINE UploadChunk::Impl_::Impl_(
     ::google::protobuf::internal::InternalVisibility visibility, ::google::protobuf::Arena* arena,
@@ -316,7 +317,7 @@ UploadChunk::UploadChunk(
       from._internal_metadata_);
   new (&_impl_) Impl_(internal_visibility(), arena, from._impl_);
 
-  // @@protoc_insertion_point(copy_constructor:ncloud.UploadChunk)
+  // @@protoc_insertion_point(copy_constructor:CCcloud.UploadChunk)
 }
 inline PROTOBUF_NDEBUG_INLINE UploadChunk::Impl_::Impl_(
     ::google::protobuf::internal::InternalVisibility visibility,
@@ -329,7 +330,7 @@ inline void UploadChunk::SharedCtor(::_pb::Arena* arena) {
   new (&_impl_) Impl_(internal_visibility(), arena);
 }
 UploadChunk::~UploadChunk() {
-  // @@protoc_insertion_point(destructor:ncloud.UploadChunk)
+  // @@protoc_insertion_point(destructor:CCcloud.UploadChunk)
   _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
   SharedDtor();
 }
@@ -341,7 +342,7 @@ inline void UploadChunk::SharedDtor() {
 }
 
 PROTOBUF_NOINLINE void UploadChunk::Clear() {
-// @@protoc_insertion_point(message_clear_start:ncloud.UploadChunk)
+// @@protoc_insertion_point(message_clear_start:CCcloud.UploadChunk)
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
   ::uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
@@ -360,7 +361,7 @@ const char* UploadChunk::_InternalParse(
 
 
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<1, 2, 0, 35, 2> UploadChunk::_table_ = {
+const ::_pbi::TcParseTable<1, 2, 0, 36, 2> UploadChunk::_table_ = {
   {
     0,  // no _has_bits_
     0, // no _extensions_
@@ -392,8 +393,8 @@ const ::_pbi::TcParseTable<1, 2, 0, 35, 2> UploadChunk::_table_ = {
   }},
   // no aux_entries
   {{
-    "\22\10\0\0\0\0\0\0"
-    "ncloud.UploadChunk"
+    "\23\10\0\0\0\0\0\0"
+    "CCcloud.UploadChunk"
     "filename"
   }},
 };
@@ -401,7 +402,7 @@ const ::_pbi::TcParseTable<1, 2, 0, 35, 2> UploadChunk::_table_ = {
 ::uint8_t* UploadChunk::_InternalSerialize(
     ::uint8_t* target,
     ::google::protobuf::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ncloud.UploadChunk)
+  // @@protoc_insertion_point(serialize_to_array_start:CCcloud.UploadChunk)
   ::uint32_t cached_has_bits = 0;
   (void)cached_has_bits;
 
@@ -409,7 +410,7 @@ const ::_pbi::TcParseTable<1, 2, 0, 35, 2> UploadChunk::_table_ = {
   if (!this->_internal_filename().empty()) {
     const std::string& _s = this->_internal_filename();
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-        _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "ncloud.UploadChunk.filename");
+        _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "CCcloud.UploadChunk.filename");
     target = stream->WriteStringMaybeAliased(1, _s, target);
   }
 
@@ -424,12 +425,12 @@ const ::_pbi::TcParseTable<1, 2, 0, 35, 2> UploadChunk::_table_ = {
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
             _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ncloud.UploadChunk)
+  // @@protoc_insertion_point(serialize_to_array_end:CCcloud.UploadChunk)
   return target;
 }
 
 ::size_t UploadChunk::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ncloud.UploadChunk)
+// @@protoc_insertion_point(message_byte_size_start:CCcloud.UploadChunk)
   ::size_t total_size = 0;
 
   ::uint32_t cached_has_bits = 0;
@@ -462,7 +463,7 @@ const ::google::protobuf::Message::ClassData* UploadChunk::GetClassData() const 
 void UploadChunk::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
   auto* const _this = static_cast<UploadChunk*>(&to_msg);
   auto& from = static_cast<const UploadChunk&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:ncloud.UploadChunk)
+  // @@protoc_insertion_point(class_specific_merge_from_start:CCcloud.UploadChunk)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
@@ -477,7 +478,7 @@ void UploadChunk::MergeImpl(::google::protobuf::Message& to_msg, const ::google:
 }
 
 void UploadChunk::CopyFrom(const UploadChunk& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ncloud.UploadChunk)
+// @@protoc_insertion_point(class_specific_copy_from_start:CCcloud.UploadChunk)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -513,7 +514,7 @@ class UploadResponse::_Internal {
 UploadResponse::UploadResponse(::google::protobuf::Arena* arena)
     : ::google::protobuf::Message(arena) {
   SharedCtor(arena);
-  // @@protoc_insertion_point(arena_constructor:ncloud.UploadResponse)
+  // @@protoc_insertion_point(arena_constructor:CCcloud.UploadResponse)
 }
 inline PROTOBUF_NDEBUG_INLINE UploadResponse::Impl_::Impl_(
     ::google::protobuf::internal::InternalVisibility visibility, ::google::protobuf::Arena* arena,
@@ -532,7 +533,7 @@ UploadResponse::UploadResponse(
   new (&_impl_) Impl_(internal_visibility(), arena, from._impl_);
   _impl_.success_ = from._impl_.success_;
 
-  // @@protoc_insertion_point(copy_constructor:ncloud.UploadResponse)
+  // @@protoc_insertion_point(copy_constructor:CCcloud.UploadResponse)
 }
 inline PROTOBUF_NDEBUG_INLINE UploadResponse::Impl_::Impl_(
     ::google::protobuf::internal::InternalVisibility visibility,
@@ -545,7 +546,7 @@ inline void UploadResponse::SharedCtor(::_pb::Arena* arena) {
   _impl_.success_ = {};
 }
 UploadResponse::~UploadResponse() {
-  // @@protoc_insertion_point(destructor:ncloud.UploadResponse)
+  // @@protoc_insertion_point(destructor:CCcloud.UploadResponse)
   _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
   SharedDtor();
 }
@@ -556,7 +557,7 @@ inline void UploadResponse::SharedDtor() {
 }
 
 PROTOBUF_NOINLINE void UploadResponse::Clear() {
-// @@protoc_insertion_point(message_clear_start:ncloud.UploadResponse)
+// @@protoc_insertion_point(message_clear_start:CCcloud.UploadResponse)
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
   ::uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
@@ -575,7 +576,7 @@ const char* UploadResponse::_InternalParse(
 
 
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<1, 2, 0, 37, 2> UploadResponse::_table_ = {
+const ::_pbi::TcParseTable<1, 2, 0, 38, 2> UploadResponse::_table_ = {
   {
     0,  // no _has_bits_
     0, // no _extensions_
@@ -607,8 +608,8 @@ const ::_pbi::TcParseTable<1, 2, 0, 37, 2> UploadResponse::_table_ = {
   }},
   // no aux_entries
   {{
-    "\25\0\7\0\0\0\0\0"
-    "ncloud.UploadResponse"
+    "\26\0\7\0\0\0\0\0"
+    "CCcloud.UploadResponse"
     "message"
   }},
 };
@@ -616,7 +617,7 @@ const ::_pbi::TcParseTable<1, 2, 0, 37, 2> UploadResponse::_table_ = {
 ::uint8_t* UploadResponse::_InternalSerialize(
     ::uint8_t* target,
     ::google::protobuf::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ncloud.UploadResponse)
+  // @@protoc_insertion_point(serialize_to_array_start:CCcloud.UploadResponse)
   ::uint32_t cached_has_bits = 0;
   (void)cached_has_bits;
 
@@ -631,7 +632,7 @@ const ::_pbi::TcParseTable<1, 2, 0, 37, 2> UploadResponse::_table_ = {
   if (!this->_internal_message().empty()) {
     const std::string& _s = this->_internal_message();
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-        _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "ncloud.UploadResponse.message");
+        _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "CCcloud.UploadResponse.message");
     target = stream->WriteStringMaybeAliased(2, _s, target);
   }
 
@@ -640,12 +641,12 @@ const ::_pbi::TcParseTable<1, 2, 0, 37, 2> UploadResponse::_table_ = {
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
             _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ncloud.UploadResponse)
+  // @@protoc_insertion_point(serialize_to_array_end:CCcloud.UploadResponse)
   return target;
 }
 
 ::size_t UploadResponse::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ncloud.UploadResponse)
+// @@protoc_insertion_point(message_byte_size_start:CCcloud.UploadResponse)
   ::size_t total_size = 0;
 
   ::uint32_t cached_has_bits = 0;
@@ -677,7 +678,7 @@ const ::google::protobuf::Message::ClassData* UploadResponse::GetClassData() con
 void UploadResponse::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
   auto* const _this = static_cast<UploadResponse*>(&to_msg);
   auto& from = static_cast<const UploadResponse&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:ncloud.UploadResponse)
+  // @@protoc_insertion_point(class_specific_merge_from_start:CCcloud.UploadResponse)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
@@ -692,7 +693,7 @@ void UploadResponse::MergeImpl(::google::protobuf::Message& to_msg, const ::goog
 }
 
 void UploadResponse::CopyFrom(const UploadResponse& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ncloud.UploadResponse)
+// @@protoc_insertion_point(class_specific_copy_from_start:CCcloud.UploadResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -728,7 +729,7 @@ class DownloadRequest::_Internal {
 DownloadRequest::DownloadRequest(::google::protobuf::Arena* arena)
     : ::google::protobuf::Message(arena) {
   SharedCtor(arena);
-  // @@protoc_insertion_point(arena_constructor:ncloud.DownloadRequest)
+  // @@protoc_insertion_point(arena_constructor:CCcloud.DownloadRequest)
 }
 inline PROTOBUF_NDEBUG_INLINE DownloadRequest::Impl_::Impl_(
     ::google::protobuf::internal::InternalVisibility visibility, ::google::protobuf::Arena* arena,
@@ -746,7 +747,7 @@ DownloadRequest::DownloadRequest(
       from._internal_metadata_);
   new (&_impl_) Impl_(internal_visibility(), arena, from._impl_);
 
-  // @@protoc_insertion_point(copy_constructor:ncloud.DownloadRequest)
+  // @@protoc_insertion_point(copy_constructor:CCcloud.DownloadRequest)
 }
 inline PROTOBUF_NDEBUG_INLINE DownloadRequest::Impl_::Impl_(
     ::google::protobuf::internal::InternalVisibility visibility,
@@ -758,7 +759,7 @@ inline void DownloadRequest::SharedCtor(::_pb::Arena* arena) {
   new (&_impl_) Impl_(internal_visibility(), arena);
 }
 DownloadRequest::~DownloadRequest() {
-  // @@protoc_insertion_point(destructor:ncloud.DownloadRequest)
+  // @@protoc_insertion_point(destructor:CCcloud.DownloadRequest)
   _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
   SharedDtor();
 }
@@ -769,7 +770,7 @@ inline void DownloadRequest::SharedDtor() {
 }
 
 PROTOBUF_NOINLINE void DownloadRequest::Clear() {
-// @@protoc_insertion_point(message_clear_start:ncloud.DownloadRequest)
+// @@protoc_insertion_point(message_clear_start:CCcloud.DownloadRequest)
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
   ::uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
@@ -787,7 +788,7 @@ const char* DownloadRequest::_InternalParse(
 
 
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<0, 1, 0, 39, 2> DownloadRequest::_table_ = {
+const ::_pbi::TcParseTable<0, 1, 0, 40, 2> DownloadRequest::_table_ = {
   {
     0,  // no _has_bits_
     0, // no _extensions_
@@ -813,8 +814,8 @@ const ::_pbi::TcParseTable<0, 1, 0, 39, 2> DownloadRequest::_table_ = {
   }},
   // no aux_entries
   {{
-    "\26\10\0\0\0\0\0\0"
-    "ncloud.DownloadRequest"
+    "\27\10\0\0\0\0\0\0"
+    "CCcloud.DownloadRequest"
     "filename"
   }},
 };
@@ -822,7 +823,7 @@ const ::_pbi::TcParseTable<0, 1, 0, 39, 2> DownloadRequest::_table_ = {
 ::uint8_t* DownloadRequest::_InternalSerialize(
     ::uint8_t* target,
     ::google::protobuf::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ncloud.DownloadRequest)
+  // @@protoc_insertion_point(serialize_to_array_start:CCcloud.DownloadRequest)
   ::uint32_t cached_has_bits = 0;
   (void)cached_has_bits;
 
@@ -830,7 +831,7 @@ const ::_pbi::TcParseTable<0, 1, 0, 39, 2> DownloadRequest::_table_ = {
   if (!this->_internal_filename().empty()) {
     const std::string& _s = this->_internal_filename();
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-        _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "ncloud.DownloadRequest.filename");
+        _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "CCcloud.DownloadRequest.filename");
     target = stream->WriteStringMaybeAliased(1, _s, target);
   }
 
@@ -839,12 +840,12 @@ const ::_pbi::TcParseTable<0, 1, 0, 39, 2> DownloadRequest::_table_ = {
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
             _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ncloud.DownloadRequest)
+  // @@protoc_insertion_point(serialize_to_array_end:CCcloud.DownloadRequest)
   return target;
 }
 
 ::size_t DownloadRequest::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ncloud.DownloadRequest)
+// @@protoc_insertion_point(message_byte_size_start:CCcloud.DownloadRequest)
   ::size_t total_size = 0;
 
   ::uint32_t cached_has_bits = 0;
@@ -871,7 +872,7 @@ const ::google::protobuf::Message::ClassData* DownloadRequest::GetClassData() co
 void DownloadRequest::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
   auto* const _this = static_cast<DownloadRequest*>(&to_msg);
   auto& from = static_cast<const DownloadRequest&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:ncloud.DownloadRequest)
+  // @@protoc_insertion_point(class_specific_merge_from_start:CCcloud.DownloadRequest)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
@@ -883,7 +884,7 @@ void DownloadRequest::MergeImpl(::google::protobuf::Message& to_msg, const ::goo
 }
 
 void DownloadRequest::CopyFrom(const DownloadRequest& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ncloud.DownloadRequest)
+// @@protoc_insertion_point(class_specific_copy_from_start:CCcloud.DownloadRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -918,7 +919,7 @@ class DownloadChunk::_Internal {
 DownloadChunk::DownloadChunk(::google::protobuf::Arena* arena)
     : ::google::protobuf::Message(arena) {
   SharedCtor(arena);
-  // @@protoc_insertion_point(arena_constructor:ncloud.DownloadChunk)
+  // @@protoc_insertion_point(arena_constructor:CCcloud.DownloadChunk)
 }
 inline PROTOBUF_NDEBUG_INLINE DownloadChunk::Impl_::Impl_(
     ::google::protobuf::internal::InternalVisibility visibility, ::google::protobuf::Arena* arena,
@@ -936,7 +937,7 @@ DownloadChunk::DownloadChunk(
       from._internal_metadata_);
   new (&_impl_) Impl_(internal_visibility(), arena, from._impl_);
 
-  // @@protoc_insertion_point(copy_constructor:ncloud.DownloadChunk)
+  // @@protoc_insertion_point(copy_constructor:CCcloud.DownloadChunk)
 }
 inline PROTOBUF_NDEBUG_INLINE DownloadChunk::Impl_::Impl_(
     ::google::protobuf::internal::InternalVisibility visibility,
@@ -948,7 +949,7 @@ inline void DownloadChunk::SharedCtor(::_pb::Arena* arena) {
   new (&_impl_) Impl_(internal_visibility(), arena);
 }
 DownloadChunk::~DownloadChunk() {
-  // @@protoc_insertion_point(destructor:ncloud.DownloadChunk)
+  // @@protoc_insertion_point(destructor:CCcloud.DownloadChunk)
   _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
   SharedDtor();
 }
@@ -959,7 +960,7 @@ inline void DownloadChunk::SharedDtor() {
 }
 
 PROTOBUF_NOINLINE void DownloadChunk::Clear() {
-// @@protoc_insertion_point(message_clear_start:ncloud.DownloadChunk)
+// @@protoc_insertion_point(message_clear_start:CCcloud.DownloadChunk)
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
   ::uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
@@ -1009,7 +1010,7 @@ const ::_pbi::TcParseTable<0, 1, 0, 0, 2> DownloadChunk::_table_ = {
 ::uint8_t* DownloadChunk::_InternalSerialize(
     ::uint8_t* target,
     ::google::protobuf::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ncloud.DownloadChunk)
+  // @@protoc_insertion_point(serialize_to_array_start:CCcloud.DownloadChunk)
   ::uint32_t cached_has_bits = 0;
   (void)cached_has_bits;
 
@@ -1024,12 +1025,12 @@ const ::_pbi::TcParseTable<0, 1, 0, 0, 2> DownloadChunk::_table_ = {
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
             _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ncloud.DownloadChunk)
+  // @@protoc_insertion_point(serialize_to_array_end:CCcloud.DownloadChunk)
   return target;
 }
 
 ::size_t DownloadChunk::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ncloud.DownloadChunk)
+// @@protoc_insertion_point(message_byte_size_start:CCcloud.DownloadChunk)
   ::size_t total_size = 0;
 
   ::uint32_t cached_has_bits = 0;
@@ -1056,7 +1057,7 @@ const ::google::protobuf::Message::ClassData* DownloadChunk::GetClassData() cons
 void DownloadChunk::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
   auto* const _this = static_cast<DownloadChunk*>(&to_msg);
   auto& from = static_cast<const DownloadChunk&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:ncloud.DownloadChunk)
+  // @@protoc_insertion_point(class_specific_merge_from_start:CCcloud.DownloadChunk)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
@@ -1068,7 +1069,7 @@ void DownloadChunk::MergeImpl(::google::protobuf::Message& to_msg, const ::googl
 }
 
 void DownloadChunk::CopyFrom(const DownloadChunk& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ncloud.DownloadChunk)
+// @@protoc_insertion_point(class_specific_copy_from_start:CCcloud.DownloadChunk)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -1103,7 +1104,7 @@ class DeleteRequest::_Internal {
 DeleteRequest::DeleteRequest(::google::protobuf::Arena* arena)
     : ::google::protobuf::Message(arena) {
   SharedCtor(arena);
-  // @@protoc_insertion_point(arena_constructor:ncloud.DeleteRequest)
+  // @@protoc_insertion_point(arena_constructor:CCcloud.DeleteRequest)
 }
 inline PROTOBUF_NDEBUG_INLINE DeleteRequest::Impl_::Impl_(
     ::google::protobuf::internal::InternalVisibility visibility, ::google::protobuf::Arena* arena,
@@ -1121,7 +1122,7 @@ DeleteRequest::DeleteRequest(
       from._internal_metadata_);
   new (&_impl_) Impl_(internal_visibility(), arena, from._impl_);
 
-  // @@protoc_insertion_point(copy_constructor:ncloud.DeleteRequest)
+  // @@protoc_insertion_point(copy_constructor:CCcloud.DeleteRequest)
 }
 inline PROTOBUF_NDEBUG_INLINE DeleteRequest::Impl_::Impl_(
     ::google::protobuf::internal::InternalVisibility visibility,
@@ -1133,7 +1134,7 @@ inline void DeleteRequest::SharedCtor(::_pb::Arena* arena) {
   new (&_impl_) Impl_(internal_visibility(), arena);
 }
 DeleteRequest::~DeleteRequest() {
-  // @@protoc_insertion_point(destructor:ncloud.DeleteRequest)
+  // @@protoc_insertion_point(destructor:CCcloud.DeleteRequest)
   _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
   SharedDtor();
 }
@@ -1144,7 +1145,7 @@ inline void DeleteRequest::SharedDtor() {
 }
 
 PROTOBUF_NOINLINE void DeleteRequest::Clear() {
-// @@protoc_insertion_point(message_clear_start:ncloud.DeleteRequest)
+// @@protoc_insertion_point(message_clear_start:CCcloud.DeleteRequest)
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
   ::uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
@@ -1162,7 +1163,7 @@ const char* DeleteRequest::_InternalParse(
 
 
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<0, 1, 0, 37, 2> DeleteRequest::_table_ = {
+const ::_pbi::TcParseTable<0, 1, 0, 38, 2> DeleteRequest::_table_ = {
   {
     0,  // no _has_bits_
     0, // no _extensions_
@@ -1188,8 +1189,8 @@ const ::_pbi::TcParseTable<0, 1, 0, 37, 2> DeleteRequest::_table_ = {
   }},
   // no aux_entries
   {{
-    "\24\10\0\0\0\0\0\0"
-    "ncloud.DeleteRequest"
+    "\25\10\0\0\0\0\0\0"
+    "CCcloud.DeleteRequest"
     "filename"
   }},
 };
@@ -1197,7 +1198,7 @@ const ::_pbi::TcParseTable<0, 1, 0, 37, 2> DeleteRequest::_table_ = {
 ::uint8_t* DeleteRequest::_InternalSerialize(
     ::uint8_t* target,
     ::google::protobuf::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ncloud.DeleteRequest)
+  // @@protoc_insertion_point(serialize_to_array_start:CCcloud.DeleteRequest)
   ::uint32_t cached_has_bits = 0;
   (void)cached_has_bits;
 
@@ -1205,7 +1206,7 @@ const ::_pbi::TcParseTable<0, 1, 0, 37, 2> DeleteRequest::_table_ = {
   if (!this->_internal_filename().empty()) {
     const std::string& _s = this->_internal_filename();
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-        _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "ncloud.DeleteRequest.filename");
+        _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "CCcloud.DeleteRequest.filename");
     target = stream->WriteStringMaybeAliased(1, _s, target);
   }
 
@@ -1214,12 +1215,12 @@ const ::_pbi::TcParseTable<0, 1, 0, 37, 2> DeleteRequest::_table_ = {
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
             _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ncloud.DeleteRequest)
+  // @@protoc_insertion_point(serialize_to_array_end:CCcloud.DeleteRequest)
   return target;
 }
 
 ::size_t DeleteRequest::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ncloud.DeleteRequest)
+// @@protoc_insertion_point(message_byte_size_start:CCcloud.DeleteRequest)
   ::size_t total_size = 0;
 
   ::uint32_t cached_has_bits = 0;
@@ -1246,7 +1247,7 @@ const ::google::protobuf::Message::ClassData* DeleteRequest::GetClassData() cons
 void DeleteRequest::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
   auto* const _this = static_cast<DeleteRequest*>(&to_msg);
   auto& from = static_cast<const DeleteRequest&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:ncloud.DeleteRequest)
+  // @@protoc_insertion_point(class_specific_merge_from_start:CCcloud.DeleteRequest)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
@@ -1258,7 +1259,7 @@ void DeleteRequest::MergeImpl(::google::protobuf::Message& to_msg, const ::googl
 }
 
 void DeleteRequest::CopyFrom(const DeleteRequest& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ncloud.DeleteRequest)
+// @@protoc_insertion_point(class_specific_copy_from_start:CCcloud.DeleteRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -1293,7 +1294,7 @@ class DeleteResponse::_Internal {
 DeleteResponse::DeleteResponse(::google::protobuf::Arena* arena)
     : ::google::protobuf::Message(arena) {
   SharedCtor(arena);
-  // @@protoc_insertion_point(arena_constructor:ncloud.DeleteResponse)
+  // @@protoc_insertion_point(arena_constructor:CCcloud.DeleteResponse)
 }
 inline PROTOBUF_NDEBUG_INLINE DeleteResponse::Impl_::Impl_(
     ::google::protobuf::internal::InternalVisibility visibility, ::google::protobuf::Arena* arena,
@@ -1312,7 +1313,7 @@ DeleteResponse::DeleteResponse(
   new (&_impl_) Impl_(internal_visibility(), arena, from._impl_);
   _impl_.success_ = from._impl_.success_;
 
-  // @@protoc_insertion_point(copy_constructor:ncloud.DeleteResponse)
+  // @@protoc_insertion_point(copy_constructor:CCcloud.DeleteResponse)
 }
 inline PROTOBUF_NDEBUG_INLINE DeleteResponse::Impl_::Impl_(
     ::google::protobuf::internal::InternalVisibility visibility,
@@ -1325,7 +1326,7 @@ inline void DeleteResponse::SharedCtor(::_pb::Arena* arena) {
   _impl_.success_ = {};
 }
 DeleteResponse::~DeleteResponse() {
-  // @@protoc_insertion_point(destructor:ncloud.DeleteResponse)
+  // @@protoc_insertion_point(destructor:CCcloud.DeleteResponse)
   _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
   SharedDtor();
 }
@@ -1336,7 +1337,7 @@ inline void DeleteResponse::SharedDtor() {
 }
 
 PROTOBUF_NOINLINE void DeleteResponse::Clear() {
-// @@protoc_insertion_point(message_clear_start:ncloud.DeleteResponse)
+// @@protoc_insertion_point(message_clear_start:CCcloud.DeleteResponse)
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
   ::uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
@@ -1355,7 +1356,7 @@ const char* DeleteResponse::_InternalParse(
 
 
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<1, 2, 0, 37, 2> DeleteResponse::_table_ = {
+const ::_pbi::TcParseTable<1, 2, 0, 38, 2> DeleteResponse::_table_ = {
   {
     0,  // no _has_bits_
     0, // no _extensions_
@@ -1387,8 +1388,8 @@ const ::_pbi::TcParseTable<1, 2, 0, 37, 2> DeleteResponse::_table_ = {
   }},
   // no aux_entries
   {{
-    "\25\0\7\0\0\0\0\0"
-    "ncloud.DeleteResponse"
+    "\26\0\7\0\0\0\0\0"
+    "CCcloud.DeleteResponse"
     "message"
   }},
 };
@@ -1396,7 +1397,7 @@ const ::_pbi::TcParseTable<1, 2, 0, 37, 2> DeleteResponse::_table_ = {
 ::uint8_t* DeleteResponse::_InternalSerialize(
     ::uint8_t* target,
     ::google::protobuf::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ncloud.DeleteResponse)
+  // @@protoc_insertion_point(serialize_to_array_start:CCcloud.DeleteResponse)
   ::uint32_t cached_has_bits = 0;
   (void)cached_has_bits;
 
@@ -1411,7 +1412,7 @@ const ::_pbi::TcParseTable<1, 2, 0, 37, 2> DeleteResponse::_table_ = {
   if (!this->_internal_message().empty()) {
     const std::string& _s = this->_internal_message();
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-        _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "ncloud.DeleteResponse.message");
+        _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "CCcloud.DeleteResponse.message");
     target = stream->WriteStringMaybeAliased(2, _s, target);
   }
 
@@ -1420,12 +1421,12 @@ const ::_pbi::TcParseTable<1, 2, 0, 37, 2> DeleteResponse::_table_ = {
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
             _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ncloud.DeleteResponse)
+  // @@protoc_insertion_point(serialize_to_array_end:CCcloud.DeleteResponse)
   return target;
 }
 
 ::size_t DeleteResponse::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ncloud.DeleteResponse)
+// @@protoc_insertion_point(message_byte_size_start:CCcloud.DeleteResponse)
   ::size_t total_size = 0;
 
   ::uint32_t cached_has_bits = 0;
@@ -1457,7 +1458,7 @@ const ::google::protobuf::Message::ClassData* DeleteResponse::GetClassData() con
 void DeleteResponse::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
   auto* const _this = static_cast<DeleteResponse*>(&to_msg);
   auto& from = static_cast<const DeleteResponse&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:ncloud.DeleteResponse)
+  // @@protoc_insertion_point(class_specific_merge_from_start:CCcloud.DeleteResponse)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
@@ -1472,7 +1473,7 @@ void DeleteResponse::MergeImpl(::google::protobuf::Message& to_msg, const ::goog
 }
 
 void DeleteResponse::CopyFrom(const DeleteResponse& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ncloud.DeleteResponse)
+// @@protoc_insertion_point(class_specific_copy_from_start:CCcloud.DeleteResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -1500,7 +1501,7 @@ void DeleteResponse::InternalSwap(DeleteResponse* PROTOBUF_RESTRICT other) {
       file_level_metadata_file_2eproto[5]);
 }
 // @@protoc_insertion_point(namespace_scope)
-}  // namespace ncloud
+}  // namespace CCcloud
 namespace google {
 namespace protobuf {
 }  // namespace protobuf

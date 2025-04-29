@@ -25,97 +25,97 @@
 #include <grpcpp/support/stub_options.h>
 #include <grpcpp/support/sync_stream.h>
 
-namespace ncloud {
+namespace CCcloud {
 
 class FileService final {
  public:
   static constexpr char const* service_full_name() {
-    return "ncloud.FileService";
+    return "CCcloud.FileService";
   }
   class StubInterface {
    public:
     virtual ~StubInterface() {}
-    std::unique_ptr< ::grpc::ClientWriterInterface< ::ncloud::UploadChunk>> Upload(::grpc::ClientContext* context, ::ncloud::UploadResponse* response) {
-      return std::unique_ptr< ::grpc::ClientWriterInterface< ::ncloud::UploadChunk>>(UploadRaw(context, response));
+    std::unique_ptr< ::grpc::ClientWriterInterface< ::CCcloud::UploadChunk>> Upload(::grpc::ClientContext* context, ::CCcloud::UploadResponse* response) {
+      return std::unique_ptr< ::grpc::ClientWriterInterface< ::CCcloud::UploadChunk>>(UploadRaw(context, response));
     }
-    std::unique_ptr< ::grpc::ClientAsyncWriterInterface< ::ncloud::UploadChunk>> AsyncUpload(::grpc::ClientContext* context, ::ncloud::UploadResponse* response, ::grpc::CompletionQueue* cq, void* tag) {
-      return std::unique_ptr< ::grpc::ClientAsyncWriterInterface< ::ncloud::UploadChunk>>(AsyncUploadRaw(context, response, cq, tag));
+    std::unique_ptr< ::grpc::ClientAsyncWriterInterface< ::CCcloud::UploadChunk>> AsyncUpload(::grpc::ClientContext* context, ::CCcloud::UploadResponse* response, ::grpc::CompletionQueue* cq, void* tag) {
+      return std::unique_ptr< ::grpc::ClientAsyncWriterInterface< ::CCcloud::UploadChunk>>(AsyncUploadRaw(context, response, cq, tag));
     }
-    std::unique_ptr< ::grpc::ClientAsyncWriterInterface< ::ncloud::UploadChunk>> PrepareAsyncUpload(::grpc::ClientContext* context, ::ncloud::UploadResponse* response, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncWriterInterface< ::ncloud::UploadChunk>>(PrepareAsyncUploadRaw(context, response, cq));
+    std::unique_ptr< ::grpc::ClientAsyncWriterInterface< ::CCcloud::UploadChunk>> PrepareAsyncUpload(::grpc::ClientContext* context, ::CCcloud::UploadResponse* response, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncWriterInterface< ::CCcloud::UploadChunk>>(PrepareAsyncUploadRaw(context, response, cq));
     }
-    std::unique_ptr< ::grpc::ClientReaderInterface< ::ncloud::DownloadChunk>> Download(::grpc::ClientContext* context, const ::ncloud::DownloadRequest& request) {
-      return std::unique_ptr< ::grpc::ClientReaderInterface< ::ncloud::DownloadChunk>>(DownloadRaw(context, request));
+    std::unique_ptr< ::grpc::ClientReaderInterface< ::CCcloud::DownloadChunk>> Download(::grpc::ClientContext* context, const ::CCcloud::DownloadRequest& request) {
+      return std::unique_ptr< ::grpc::ClientReaderInterface< ::CCcloud::DownloadChunk>>(DownloadRaw(context, request));
     }
-    std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::ncloud::DownloadChunk>> AsyncDownload(::grpc::ClientContext* context, const ::ncloud::DownloadRequest& request, ::grpc::CompletionQueue* cq, void* tag) {
-      return std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::ncloud::DownloadChunk>>(AsyncDownloadRaw(context, request, cq, tag));
+    std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::CCcloud::DownloadChunk>> AsyncDownload(::grpc::ClientContext* context, const ::CCcloud::DownloadRequest& request, ::grpc::CompletionQueue* cq, void* tag) {
+      return std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::CCcloud::DownloadChunk>>(AsyncDownloadRaw(context, request, cq, tag));
     }
-    std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::ncloud::DownloadChunk>> PrepareAsyncDownload(::grpc::ClientContext* context, const ::ncloud::DownloadRequest& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::ncloud::DownloadChunk>>(PrepareAsyncDownloadRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::CCcloud::DownloadChunk>> PrepareAsyncDownload(::grpc::ClientContext* context, const ::CCcloud::DownloadRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::CCcloud::DownloadChunk>>(PrepareAsyncDownloadRaw(context, request, cq));
     }
-    virtual ::grpc::Status Delete(::grpc::ClientContext* context, const ::ncloud::DeleteRequest& request, ::ncloud::DeleteResponse* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::ncloud::DeleteResponse>> AsyncDelete(::grpc::ClientContext* context, const ::ncloud::DeleteRequest& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::ncloud::DeleteResponse>>(AsyncDeleteRaw(context, request, cq));
+    virtual ::grpc::Status Delete(::grpc::ClientContext* context, const ::CCcloud::DeleteRequest& request, ::CCcloud::DeleteResponse* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::CCcloud::DeleteResponse>> AsyncDelete(::grpc::ClientContext* context, const ::CCcloud::DeleteRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::CCcloud::DeleteResponse>>(AsyncDeleteRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::ncloud::DeleteResponse>> PrepareAsyncDelete(::grpc::ClientContext* context, const ::ncloud::DeleteRequest& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::ncloud::DeleteResponse>>(PrepareAsyncDeleteRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::CCcloud::DeleteResponse>> PrepareAsyncDelete(::grpc::ClientContext* context, const ::CCcloud::DeleteRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::CCcloud::DeleteResponse>>(PrepareAsyncDeleteRaw(context, request, cq));
     }
     class async_interface {
      public:
       virtual ~async_interface() {}
-      virtual void Upload(::grpc::ClientContext* context, ::ncloud::UploadResponse* response, ::grpc::ClientWriteReactor< ::ncloud::UploadChunk>* reactor) = 0;
-      virtual void Download(::grpc::ClientContext* context, const ::ncloud::DownloadRequest* request, ::grpc::ClientReadReactor< ::ncloud::DownloadChunk>* reactor) = 0;
-      virtual void Delete(::grpc::ClientContext* context, const ::ncloud::DeleteRequest* request, ::ncloud::DeleteResponse* response, std::function<void(::grpc::Status)>) = 0;
-      virtual void Delete(::grpc::ClientContext* context, const ::ncloud::DeleteRequest* request, ::ncloud::DeleteResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void Upload(::grpc::ClientContext* context, ::CCcloud::UploadResponse* response, ::grpc::ClientWriteReactor< ::CCcloud::UploadChunk>* reactor) = 0;
+      virtual void Download(::grpc::ClientContext* context, const ::CCcloud::DownloadRequest* request, ::grpc::ClientReadReactor< ::CCcloud::DownloadChunk>* reactor) = 0;
+      virtual void Delete(::grpc::ClientContext* context, const ::CCcloud::DeleteRequest* request, ::CCcloud::DeleteResponse* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void Delete(::grpc::ClientContext* context, const ::CCcloud::DeleteRequest* request, ::CCcloud::DeleteResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
     };
     typedef class async_interface experimental_async_interface;
     virtual class async_interface* async() { return nullptr; }
     class async_interface* experimental_async() { return async(); }
    private:
-    virtual ::grpc::ClientWriterInterface< ::ncloud::UploadChunk>* UploadRaw(::grpc::ClientContext* context, ::ncloud::UploadResponse* response) = 0;
-    virtual ::grpc::ClientAsyncWriterInterface< ::ncloud::UploadChunk>* AsyncUploadRaw(::grpc::ClientContext* context, ::ncloud::UploadResponse* response, ::grpc::CompletionQueue* cq, void* tag) = 0;
-    virtual ::grpc::ClientAsyncWriterInterface< ::ncloud::UploadChunk>* PrepareAsyncUploadRaw(::grpc::ClientContext* context, ::ncloud::UploadResponse* response, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientReaderInterface< ::ncloud::DownloadChunk>* DownloadRaw(::grpc::ClientContext* context, const ::ncloud::DownloadRequest& request) = 0;
-    virtual ::grpc::ClientAsyncReaderInterface< ::ncloud::DownloadChunk>* AsyncDownloadRaw(::grpc::ClientContext* context, const ::ncloud::DownloadRequest& request, ::grpc::CompletionQueue* cq, void* tag) = 0;
-    virtual ::grpc::ClientAsyncReaderInterface< ::ncloud::DownloadChunk>* PrepareAsyncDownloadRaw(::grpc::ClientContext* context, const ::ncloud::DownloadRequest& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::ncloud::DeleteResponse>* AsyncDeleteRaw(::grpc::ClientContext* context, const ::ncloud::DeleteRequest& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::ncloud::DeleteResponse>* PrepareAsyncDeleteRaw(::grpc::ClientContext* context, const ::ncloud::DeleteRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientWriterInterface< ::CCcloud::UploadChunk>* UploadRaw(::grpc::ClientContext* context, ::CCcloud::UploadResponse* response) = 0;
+    virtual ::grpc::ClientAsyncWriterInterface< ::CCcloud::UploadChunk>* AsyncUploadRaw(::grpc::ClientContext* context, ::CCcloud::UploadResponse* response, ::grpc::CompletionQueue* cq, void* tag) = 0;
+    virtual ::grpc::ClientAsyncWriterInterface< ::CCcloud::UploadChunk>* PrepareAsyncUploadRaw(::grpc::ClientContext* context, ::CCcloud::UploadResponse* response, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientReaderInterface< ::CCcloud::DownloadChunk>* DownloadRaw(::grpc::ClientContext* context, const ::CCcloud::DownloadRequest& request) = 0;
+    virtual ::grpc::ClientAsyncReaderInterface< ::CCcloud::DownloadChunk>* AsyncDownloadRaw(::grpc::ClientContext* context, const ::CCcloud::DownloadRequest& request, ::grpc::CompletionQueue* cq, void* tag) = 0;
+    virtual ::grpc::ClientAsyncReaderInterface< ::CCcloud::DownloadChunk>* PrepareAsyncDownloadRaw(::grpc::ClientContext* context, const ::CCcloud::DownloadRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::CCcloud::DeleteResponse>* AsyncDeleteRaw(::grpc::ClientContext* context, const ::CCcloud::DeleteRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::CCcloud::DeleteResponse>* PrepareAsyncDeleteRaw(::grpc::ClientContext* context, const ::CCcloud::DeleteRequest& request, ::grpc::CompletionQueue* cq) = 0;
   };
   class Stub final : public StubInterface {
    public:
     Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
-    std::unique_ptr< ::grpc::ClientWriter< ::ncloud::UploadChunk>> Upload(::grpc::ClientContext* context, ::ncloud::UploadResponse* response) {
-      return std::unique_ptr< ::grpc::ClientWriter< ::ncloud::UploadChunk>>(UploadRaw(context, response));
+    std::unique_ptr< ::grpc::ClientWriter< ::CCcloud::UploadChunk>> Upload(::grpc::ClientContext* context, ::CCcloud::UploadResponse* response) {
+      return std::unique_ptr< ::grpc::ClientWriter< ::CCcloud::UploadChunk>>(UploadRaw(context, response));
     }
-    std::unique_ptr< ::grpc::ClientAsyncWriter< ::ncloud::UploadChunk>> AsyncUpload(::grpc::ClientContext* context, ::ncloud::UploadResponse* response, ::grpc::CompletionQueue* cq, void* tag) {
-      return std::unique_ptr< ::grpc::ClientAsyncWriter< ::ncloud::UploadChunk>>(AsyncUploadRaw(context, response, cq, tag));
+    std::unique_ptr< ::grpc::ClientAsyncWriter< ::CCcloud::UploadChunk>> AsyncUpload(::grpc::ClientContext* context, ::CCcloud::UploadResponse* response, ::grpc::CompletionQueue* cq, void* tag) {
+      return std::unique_ptr< ::grpc::ClientAsyncWriter< ::CCcloud::UploadChunk>>(AsyncUploadRaw(context, response, cq, tag));
     }
-    std::unique_ptr< ::grpc::ClientAsyncWriter< ::ncloud::UploadChunk>> PrepareAsyncUpload(::grpc::ClientContext* context, ::ncloud::UploadResponse* response, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncWriter< ::ncloud::UploadChunk>>(PrepareAsyncUploadRaw(context, response, cq));
+    std::unique_ptr< ::grpc::ClientAsyncWriter< ::CCcloud::UploadChunk>> PrepareAsyncUpload(::grpc::ClientContext* context, ::CCcloud::UploadResponse* response, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncWriter< ::CCcloud::UploadChunk>>(PrepareAsyncUploadRaw(context, response, cq));
     }
-    std::unique_ptr< ::grpc::ClientReader< ::ncloud::DownloadChunk>> Download(::grpc::ClientContext* context, const ::ncloud::DownloadRequest& request) {
-      return std::unique_ptr< ::grpc::ClientReader< ::ncloud::DownloadChunk>>(DownloadRaw(context, request));
+    std::unique_ptr< ::grpc::ClientReader< ::CCcloud::DownloadChunk>> Download(::grpc::ClientContext* context, const ::CCcloud::DownloadRequest& request) {
+      return std::unique_ptr< ::grpc::ClientReader< ::CCcloud::DownloadChunk>>(DownloadRaw(context, request));
     }
-    std::unique_ptr< ::grpc::ClientAsyncReader< ::ncloud::DownloadChunk>> AsyncDownload(::grpc::ClientContext* context, const ::ncloud::DownloadRequest& request, ::grpc::CompletionQueue* cq, void* tag) {
-      return std::unique_ptr< ::grpc::ClientAsyncReader< ::ncloud::DownloadChunk>>(AsyncDownloadRaw(context, request, cq, tag));
+    std::unique_ptr< ::grpc::ClientAsyncReader< ::CCcloud::DownloadChunk>> AsyncDownload(::grpc::ClientContext* context, const ::CCcloud::DownloadRequest& request, ::grpc::CompletionQueue* cq, void* tag) {
+      return std::unique_ptr< ::grpc::ClientAsyncReader< ::CCcloud::DownloadChunk>>(AsyncDownloadRaw(context, request, cq, tag));
     }
-    std::unique_ptr< ::grpc::ClientAsyncReader< ::ncloud::DownloadChunk>> PrepareAsyncDownload(::grpc::ClientContext* context, const ::ncloud::DownloadRequest& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncReader< ::ncloud::DownloadChunk>>(PrepareAsyncDownloadRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncReader< ::CCcloud::DownloadChunk>> PrepareAsyncDownload(::grpc::ClientContext* context, const ::CCcloud::DownloadRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncReader< ::CCcloud::DownloadChunk>>(PrepareAsyncDownloadRaw(context, request, cq));
     }
-    ::grpc::Status Delete(::grpc::ClientContext* context, const ::ncloud::DeleteRequest& request, ::ncloud::DeleteResponse* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::ncloud::DeleteResponse>> AsyncDelete(::grpc::ClientContext* context, const ::ncloud::DeleteRequest& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::ncloud::DeleteResponse>>(AsyncDeleteRaw(context, request, cq));
+    ::grpc::Status Delete(::grpc::ClientContext* context, const ::CCcloud::DeleteRequest& request, ::CCcloud::DeleteResponse* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::CCcloud::DeleteResponse>> AsyncDelete(::grpc::ClientContext* context, const ::CCcloud::DeleteRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::CCcloud::DeleteResponse>>(AsyncDeleteRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::ncloud::DeleteResponse>> PrepareAsyncDelete(::grpc::ClientContext* context, const ::ncloud::DeleteRequest& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::ncloud::DeleteResponse>>(PrepareAsyncDeleteRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::CCcloud::DeleteResponse>> PrepareAsyncDelete(::grpc::ClientContext* context, const ::CCcloud::DeleteRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::CCcloud::DeleteResponse>>(PrepareAsyncDeleteRaw(context, request, cq));
     }
     class async final :
       public StubInterface::async_interface {
      public:
-      void Upload(::grpc::ClientContext* context, ::ncloud::UploadResponse* response, ::grpc::ClientWriteReactor< ::ncloud::UploadChunk>* reactor) override;
-      void Download(::grpc::ClientContext* context, const ::ncloud::DownloadRequest* request, ::grpc::ClientReadReactor< ::ncloud::DownloadChunk>* reactor) override;
-      void Delete(::grpc::ClientContext* context, const ::ncloud::DeleteRequest* request, ::ncloud::DeleteResponse* response, std::function<void(::grpc::Status)>) override;
-      void Delete(::grpc::ClientContext* context, const ::ncloud::DeleteRequest* request, ::ncloud::DeleteResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void Upload(::grpc::ClientContext* context, ::CCcloud::UploadResponse* response, ::grpc::ClientWriteReactor< ::CCcloud::UploadChunk>* reactor) override;
+      void Download(::grpc::ClientContext* context, const ::CCcloud::DownloadRequest* request, ::grpc::ClientReadReactor< ::CCcloud::DownloadChunk>* reactor) override;
+      void Delete(::grpc::ClientContext* context, const ::CCcloud::DeleteRequest* request, ::CCcloud::DeleteResponse* response, std::function<void(::grpc::Status)>) override;
+      void Delete(::grpc::ClientContext* context, const ::CCcloud::DeleteRequest* request, ::CCcloud::DeleteResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
      private:
       friend class Stub;
       explicit async(Stub* stub): stub_(stub) { }
@@ -127,14 +127,14 @@ class FileService final {
    private:
     std::shared_ptr< ::grpc::ChannelInterface> channel_;
     class async async_stub_{this};
-    ::grpc::ClientWriter< ::ncloud::UploadChunk>* UploadRaw(::grpc::ClientContext* context, ::ncloud::UploadResponse* response) override;
-    ::grpc::ClientAsyncWriter< ::ncloud::UploadChunk>* AsyncUploadRaw(::grpc::ClientContext* context, ::ncloud::UploadResponse* response, ::grpc::CompletionQueue* cq, void* tag) override;
-    ::grpc::ClientAsyncWriter< ::ncloud::UploadChunk>* PrepareAsyncUploadRaw(::grpc::ClientContext* context, ::ncloud::UploadResponse* response, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientReader< ::ncloud::DownloadChunk>* DownloadRaw(::grpc::ClientContext* context, const ::ncloud::DownloadRequest& request) override;
-    ::grpc::ClientAsyncReader< ::ncloud::DownloadChunk>* AsyncDownloadRaw(::grpc::ClientContext* context, const ::ncloud::DownloadRequest& request, ::grpc::CompletionQueue* cq, void* tag) override;
-    ::grpc::ClientAsyncReader< ::ncloud::DownloadChunk>* PrepareAsyncDownloadRaw(::grpc::ClientContext* context, const ::ncloud::DownloadRequest& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::ncloud::DeleteResponse>* AsyncDeleteRaw(::grpc::ClientContext* context, const ::ncloud::DeleteRequest& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::ncloud::DeleteResponse>* PrepareAsyncDeleteRaw(::grpc::ClientContext* context, const ::ncloud::DeleteRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientWriter< ::CCcloud::UploadChunk>* UploadRaw(::grpc::ClientContext* context, ::CCcloud::UploadResponse* response) override;
+    ::grpc::ClientAsyncWriter< ::CCcloud::UploadChunk>* AsyncUploadRaw(::grpc::ClientContext* context, ::CCcloud::UploadResponse* response, ::grpc::CompletionQueue* cq, void* tag) override;
+    ::grpc::ClientAsyncWriter< ::CCcloud::UploadChunk>* PrepareAsyncUploadRaw(::grpc::ClientContext* context, ::CCcloud::UploadResponse* response, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientReader< ::CCcloud::DownloadChunk>* DownloadRaw(::grpc::ClientContext* context, const ::CCcloud::DownloadRequest& request) override;
+    ::grpc::ClientAsyncReader< ::CCcloud::DownloadChunk>* AsyncDownloadRaw(::grpc::ClientContext* context, const ::CCcloud::DownloadRequest& request, ::grpc::CompletionQueue* cq, void* tag) override;
+    ::grpc::ClientAsyncReader< ::CCcloud::DownloadChunk>* PrepareAsyncDownloadRaw(::grpc::ClientContext* context, const ::CCcloud::DownloadRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::CCcloud::DeleteResponse>* AsyncDeleteRaw(::grpc::ClientContext* context, const ::CCcloud::DeleteRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::CCcloud::DeleteResponse>* PrepareAsyncDeleteRaw(::grpc::ClientContext* context, const ::CCcloud::DeleteRequest& request, ::grpc::CompletionQueue* cq) override;
     const ::grpc::internal::RpcMethod rpcmethod_Upload_;
     const ::grpc::internal::RpcMethod rpcmethod_Download_;
     const ::grpc::internal::RpcMethod rpcmethod_Delete_;
@@ -145,9 +145,9 @@ class FileService final {
    public:
     Service();
     virtual ~Service();
-    virtual ::grpc::Status Upload(::grpc::ServerContext* context, ::grpc::ServerReader< ::ncloud::UploadChunk>* reader, ::ncloud::UploadResponse* response);
-    virtual ::grpc::Status Download(::grpc::ServerContext* context, const ::ncloud::DownloadRequest* request, ::grpc::ServerWriter< ::ncloud::DownloadChunk>* writer);
-    virtual ::grpc::Status Delete(::grpc::ServerContext* context, const ::ncloud::DeleteRequest* request, ::ncloud::DeleteResponse* response);
+    virtual ::grpc::Status Upload(::grpc::ServerContext* context, ::grpc::ServerReader< ::CCcloud::UploadChunk>* reader, ::CCcloud::UploadResponse* response);
+    virtual ::grpc::Status Download(::grpc::ServerContext* context, const ::CCcloud::DownloadRequest* request, ::grpc::ServerWriter< ::CCcloud::DownloadChunk>* writer);
+    virtual ::grpc::Status Delete(::grpc::ServerContext* context, const ::CCcloud::DeleteRequest* request, ::CCcloud::DeleteResponse* response);
   };
   template <class BaseClass>
   class WithAsyncMethod_Upload : public BaseClass {
@@ -161,11 +161,11 @@ class FileService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Upload(::grpc::ServerContext* /*context*/, ::grpc::ServerReader< ::ncloud::UploadChunk>* /*reader*/, ::ncloud::UploadResponse* /*response*/) override {
+    ::grpc::Status Upload(::grpc::ServerContext* /*context*/, ::grpc::ServerReader< ::CCcloud::UploadChunk>* /*reader*/, ::CCcloud::UploadResponse* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestUpload(::grpc::ServerContext* context, ::grpc::ServerAsyncReader< ::ncloud::UploadResponse, ::ncloud::UploadChunk>* reader, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void RequestUpload(::grpc::ServerContext* context, ::grpc::ServerAsyncReader< ::CCcloud::UploadResponse, ::CCcloud::UploadChunk>* reader, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncClientStreaming(0, context, reader, new_call_cq, notification_cq, tag);
     }
   };
@@ -181,11 +181,11 @@ class FileService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Download(::grpc::ServerContext* /*context*/, const ::ncloud::DownloadRequest* /*request*/, ::grpc::ServerWriter< ::ncloud::DownloadChunk>* /*writer*/) override {
+    ::grpc::Status Download(::grpc::ServerContext* /*context*/, const ::CCcloud::DownloadRequest* /*request*/, ::grpc::ServerWriter< ::CCcloud::DownloadChunk>* /*writer*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestDownload(::grpc::ServerContext* context, ::ncloud::DownloadRequest* request, ::grpc::ServerAsyncWriter< ::ncloud::DownloadChunk>* writer, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void RequestDownload(::grpc::ServerContext* context, ::CCcloud::DownloadRequest* request, ::grpc::ServerAsyncWriter< ::CCcloud::DownloadChunk>* writer, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncServerStreaming(1, context, request, writer, new_call_cq, notification_cq, tag);
     }
   };
@@ -201,11 +201,11 @@ class FileService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Delete(::grpc::ServerContext* /*context*/, const ::ncloud::DeleteRequest* /*request*/, ::ncloud::DeleteResponse* /*response*/) override {
+    ::grpc::Status Delete(::grpc::ServerContext* /*context*/, const ::CCcloud::DeleteRequest* /*request*/, ::CCcloud::DeleteResponse* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestDelete(::grpc::ServerContext* context, ::ncloud::DeleteRequest* request, ::grpc::ServerAsyncResponseWriter< ::ncloud::DeleteResponse>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void RequestDelete(::grpc::ServerContext* context, ::CCcloud::DeleteRequest* request, ::grpc::ServerAsyncResponseWriter< ::CCcloud::DeleteResponse>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
@@ -217,20 +217,20 @@ class FileService final {
    public:
     WithCallbackMethod_Upload() {
       ::grpc::Service::MarkMethodCallback(0,
-          new ::grpc::internal::CallbackClientStreamingHandler< ::ncloud::UploadChunk, ::ncloud::UploadResponse>(
+          new ::grpc::internal::CallbackClientStreamingHandler< ::CCcloud::UploadChunk, ::CCcloud::UploadResponse>(
             [this](
-                   ::grpc::CallbackServerContext* context, ::ncloud::UploadResponse* response) { return this->Upload(context, response); }));
+                   ::grpc::CallbackServerContext* context, ::CCcloud::UploadResponse* response) { return this->Upload(context, response); }));
     }
     ~WithCallbackMethod_Upload() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Upload(::grpc::ServerContext* /*context*/, ::grpc::ServerReader< ::ncloud::UploadChunk>* /*reader*/, ::ncloud::UploadResponse* /*response*/) override {
+    ::grpc::Status Upload(::grpc::ServerContext* /*context*/, ::grpc::ServerReader< ::CCcloud::UploadChunk>* /*reader*/, ::CCcloud::UploadResponse* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    virtual ::grpc::ServerReadReactor< ::ncloud::UploadChunk>* Upload(
-      ::grpc::CallbackServerContext* /*context*/, ::ncloud::UploadResponse* /*response*/)  { return nullptr; }
+    virtual ::grpc::ServerReadReactor< ::CCcloud::UploadChunk>* Upload(
+      ::grpc::CallbackServerContext* /*context*/, ::CCcloud::UploadResponse* /*response*/)  { return nullptr; }
   };
   template <class BaseClass>
   class WithCallbackMethod_Download : public BaseClass {
@@ -239,20 +239,20 @@ class FileService final {
    public:
     WithCallbackMethod_Download() {
       ::grpc::Service::MarkMethodCallback(1,
-          new ::grpc::internal::CallbackServerStreamingHandler< ::ncloud::DownloadRequest, ::ncloud::DownloadChunk>(
+          new ::grpc::internal::CallbackServerStreamingHandler< ::CCcloud::DownloadRequest, ::CCcloud::DownloadChunk>(
             [this](
-                   ::grpc::CallbackServerContext* context, const ::ncloud::DownloadRequest* request) { return this->Download(context, request); }));
+                   ::grpc::CallbackServerContext* context, const ::CCcloud::DownloadRequest* request) { return this->Download(context, request); }));
     }
     ~WithCallbackMethod_Download() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Download(::grpc::ServerContext* /*context*/, const ::ncloud::DownloadRequest* /*request*/, ::grpc::ServerWriter< ::ncloud::DownloadChunk>* /*writer*/) override {
+    ::grpc::Status Download(::grpc::ServerContext* /*context*/, const ::CCcloud::DownloadRequest* /*request*/, ::grpc::ServerWriter< ::CCcloud::DownloadChunk>* /*writer*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    virtual ::grpc::ServerWriteReactor< ::ncloud::DownloadChunk>* Download(
-      ::grpc::CallbackServerContext* /*context*/, const ::ncloud::DownloadRequest* /*request*/)  { return nullptr; }
+    virtual ::grpc::ServerWriteReactor< ::CCcloud::DownloadChunk>* Download(
+      ::grpc::CallbackServerContext* /*context*/, const ::CCcloud::DownloadRequest* /*request*/)  { return nullptr; }
   };
   template <class BaseClass>
   class WithCallbackMethod_Delete : public BaseClass {
@@ -261,25 +261,25 @@ class FileService final {
    public:
     WithCallbackMethod_Delete() {
       ::grpc::Service::MarkMethodCallback(2,
-          new ::grpc::internal::CallbackUnaryHandler< ::ncloud::DeleteRequest, ::ncloud::DeleteResponse>(
+          new ::grpc::internal::CallbackUnaryHandler< ::CCcloud::DeleteRequest, ::CCcloud::DeleteResponse>(
             [this](
-                   ::grpc::CallbackServerContext* context, const ::ncloud::DeleteRequest* request, ::ncloud::DeleteResponse* response) { return this->Delete(context, request, response); }));}
+                   ::grpc::CallbackServerContext* context, const ::CCcloud::DeleteRequest* request, ::CCcloud::DeleteResponse* response) { return this->Delete(context, request, response); }));}
     void SetMessageAllocatorFor_Delete(
-        ::grpc::MessageAllocator< ::ncloud::DeleteRequest, ::ncloud::DeleteResponse>* allocator) {
+        ::grpc::MessageAllocator< ::CCcloud::DeleteRequest, ::CCcloud::DeleteResponse>* allocator) {
       ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(2);
-      static_cast<::grpc::internal::CallbackUnaryHandler< ::ncloud::DeleteRequest, ::ncloud::DeleteResponse>*>(handler)
+      static_cast<::grpc::internal::CallbackUnaryHandler< ::CCcloud::DeleteRequest, ::CCcloud::DeleteResponse>*>(handler)
               ->SetMessageAllocator(allocator);
     }
     ~WithCallbackMethod_Delete() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Delete(::grpc::ServerContext* /*context*/, const ::ncloud::DeleteRequest* /*request*/, ::ncloud::DeleteResponse* /*response*/) override {
+    ::grpc::Status Delete(::grpc::ServerContext* /*context*/, const ::CCcloud::DeleteRequest* /*request*/, ::CCcloud::DeleteResponse* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     virtual ::grpc::ServerUnaryReactor* Delete(
-      ::grpc::CallbackServerContext* /*context*/, const ::ncloud::DeleteRequest* /*request*/, ::ncloud::DeleteResponse* /*response*/)  { return nullptr; }
+      ::grpc::CallbackServerContext* /*context*/, const ::CCcloud::DeleteRequest* /*request*/, ::CCcloud::DeleteResponse* /*response*/)  { return nullptr; }
   };
   typedef WithCallbackMethod_Upload<WithCallbackMethod_Download<WithCallbackMethod_Delete<Service > > > CallbackService;
   typedef CallbackService ExperimentalCallbackService;
@@ -295,7 +295,7 @@ class FileService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Upload(::grpc::ServerContext* /*context*/, ::grpc::ServerReader< ::ncloud::UploadChunk>* /*reader*/, ::ncloud::UploadResponse* /*response*/) override {
+    ::grpc::Status Upload(::grpc::ServerContext* /*context*/, ::grpc::ServerReader< ::CCcloud::UploadChunk>* /*reader*/, ::CCcloud::UploadResponse* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -312,7 +312,7 @@ class FileService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Download(::grpc::ServerContext* /*context*/, const ::ncloud::DownloadRequest* /*request*/, ::grpc::ServerWriter< ::ncloud::DownloadChunk>* /*writer*/) override {
+    ::grpc::Status Download(::grpc::ServerContext* /*context*/, const ::CCcloud::DownloadRequest* /*request*/, ::grpc::ServerWriter< ::CCcloud::DownloadChunk>* /*writer*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -329,7 +329,7 @@ class FileService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Delete(::grpc::ServerContext* /*context*/, const ::ncloud::DeleteRequest* /*request*/, ::ncloud::DeleteResponse* /*response*/) override {
+    ::grpc::Status Delete(::grpc::ServerContext* /*context*/, const ::CCcloud::DeleteRequest* /*request*/, ::CCcloud::DeleteResponse* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -346,7 +346,7 @@ class FileService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Upload(::grpc::ServerContext* /*context*/, ::grpc::ServerReader< ::ncloud::UploadChunk>* /*reader*/, ::ncloud::UploadResponse* /*response*/) override {
+    ::grpc::Status Upload(::grpc::ServerContext* /*context*/, ::grpc::ServerReader< ::CCcloud::UploadChunk>* /*reader*/, ::CCcloud::UploadResponse* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -366,7 +366,7 @@ class FileService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Download(::grpc::ServerContext* /*context*/, const ::ncloud::DownloadRequest* /*request*/, ::grpc::ServerWriter< ::ncloud::DownloadChunk>* /*writer*/) override {
+    ::grpc::Status Download(::grpc::ServerContext* /*context*/, const ::CCcloud::DownloadRequest* /*request*/, ::grpc::ServerWriter< ::CCcloud::DownloadChunk>* /*writer*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -386,7 +386,7 @@ class FileService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Delete(::grpc::ServerContext* /*context*/, const ::ncloud::DeleteRequest* /*request*/, ::ncloud::DeleteResponse* /*response*/) override {
+    ::grpc::Status Delete(::grpc::ServerContext* /*context*/, const ::CCcloud::DeleteRequest* /*request*/, ::CCcloud::DeleteResponse* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -409,7 +409,7 @@ class FileService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Upload(::grpc::ServerContext* /*context*/, ::grpc::ServerReader< ::ncloud::UploadChunk>* /*reader*/, ::ncloud::UploadResponse* /*response*/) override {
+    ::grpc::Status Upload(::grpc::ServerContext* /*context*/, ::grpc::ServerReader< ::CCcloud::UploadChunk>* /*reader*/, ::CCcloud::UploadResponse* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -431,7 +431,7 @@ class FileService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Download(::grpc::ServerContext* /*context*/, const ::ncloud::DownloadRequest* /*request*/, ::grpc::ServerWriter< ::ncloud::DownloadChunk>* /*writer*/) override {
+    ::grpc::Status Download(::grpc::ServerContext* /*context*/, const ::CCcloud::DownloadRequest* /*request*/, ::grpc::ServerWriter< ::CCcloud::DownloadChunk>* /*writer*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -453,7 +453,7 @@ class FileService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Delete(::grpc::ServerContext* /*context*/, const ::ncloud::DeleteRequest* /*request*/, ::ncloud::DeleteResponse* /*response*/) override {
+    ::grpc::Status Delete(::grpc::ServerContext* /*context*/, const ::CCcloud::DeleteRequest* /*request*/, ::CCcloud::DeleteResponse* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -468,10 +468,10 @@ class FileService final {
     WithStreamedUnaryMethod_Delete() {
       ::grpc::Service::MarkMethodStreamed(2,
         new ::grpc::internal::StreamedUnaryHandler<
-          ::ncloud::DeleteRequest, ::ncloud::DeleteResponse>(
+          ::CCcloud::DeleteRequest, ::CCcloud::DeleteResponse>(
             [this](::grpc::ServerContext* context,
                    ::grpc::ServerUnaryStreamer<
-                     ::ncloud::DeleteRequest, ::ncloud::DeleteResponse>* streamer) {
+                     ::CCcloud::DeleteRequest, ::CCcloud::DeleteResponse>* streamer) {
                        return this->StreamedDelete(context,
                          streamer);
                   }));
@@ -480,12 +480,12 @@ class FileService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status Delete(::grpc::ServerContext* /*context*/, const ::ncloud::DeleteRequest* /*request*/, ::ncloud::DeleteResponse* /*response*/) override {
+    ::grpc::Status Delete(::grpc::ServerContext* /*context*/, const ::CCcloud::DeleteRequest* /*request*/, ::CCcloud::DeleteResponse* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     // replace default version of method with streamed unary
-    virtual ::grpc::Status StreamedDelete(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::ncloud::DeleteRequest,::ncloud::DeleteResponse>* server_unary_streamer) = 0;
+    virtual ::grpc::Status StreamedDelete(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::CCcloud::DeleteRequest,::CCcloud::DeleteResponse>* server_unary_streamer) = 0;
   };
   typedef WithStreamedUnaryMethod_Delete<Service > StreamedUnaryService;
   template <class BaseClass>
@@ -496,10 +496,10 @@ class FileService final {
     WithSplitStreamingMethod_Download() {
       ::grpc::Service::MarkMethodStreamed(1,
         new ::grpc::internal::SplitServerStreamingHandler<
-          ::ncloud::DownloadRequest, ::ncloud::DownloadChunk>(
+          ::CCcloud::DownloadRequest, ::CCcloud::DownloadChunk>(
             [this](::grpc::ServerContext* context,
                    ::grpc::ServerSplitStreamer<
-                     ::ncloud::DownloadRequest, ::ncloud::DownloadChunk>* streamer) {
+                     ::CCcloud::DownloadRequest, ::CCcloud::DownloadChunk>* streamer) {
                        return this->StreamedDownload(context,
                          streamer);
                   }));
@@ -508,18 +508,18 @@ class FileService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status Download(::grpc::ServerContext* /*context*/, const ::ncloud::DownloadRequest* /*request*/, ::grpc::ServerWriter< ::ncloud::DownloadChunk>* /*writer*/) override {
+    ::grpc::Status Download(::grpc::ServerContext* /*context*/, const ::CCcloud::DownloadRequest* /*request*/, ::grpc::ServerWriter< ::CCcloud::DownloadChunk>* /*writer*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     // replace default version of method with split streamed
-    virtual ::grpc::Status StreamedDownload(::grpc::ServerContext* context, ::grpc::ServerSplitStreamer< ::ncloud::DownloadRequest,::ncloud::DownloadChunk>* server_split_streamer) = 0;
+    virtual ::grpc::Status StreamedDownload(::grpc::ServerContext* context, ::grpc::ServerSplitStreamer< ::CCcloud::DownloadRequest,::CCcloud::DownloadChunk>* server_split_streamer) = 0;
   };
   typedef WithSplitStreamingMethod_Download<Service > SplitStreamedService;
   typedef WithSplitStreamingMethod_Download<WithStreamedUnaryMethod_Delete<Service > > StreamedService;
 };
 
-}  // namespace ncloud
+}  // namespace CCcloud
 
 
 #endif  // GRPC_file_2eproto__INCLUDED

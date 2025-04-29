@@ -55,7 +55,7 @@ struct TableStruct_file_2eproto {
 };
 extern const ::google::protobuf::internal::DescriptorTable
     descriptor_table_file_2eproto;
-namespace ncloud {
+namespace CCcloud {
 class DeleteRequest;
 struct DeleteRequestDefaultTypeInternal;
 extern DeleteRequestDefaultTypeInternal _DeleteRequest_default_instance_;
@@ -74,13 +74,13 @@ extern UploadChunkDefaultTypeInternal _UploadChunk_default_instance_;
 class UploadResponse;
 struct UploadResponseDefaultTypeInternal;
 extern UploadResponseDefaultTypeInternal _UploadResponse_default_instance_;
-}  // namespace ncloud
+}  // namespace CCcloud
 namespace google {
 namespace protobuf {
 }  // namespace protobuf
 }  // namespace google
 
-namespace ncloud {
+namespace CCcloud {
 
 // ===================================================================
 
@@ -88,7 +88,7 @@ namespace ncloud {
 // -------------------------------------------------------------------
 
 class UploadResponse final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ncloud.UploadResponse) */ {
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:CCcloud.UploadResponse) */ {
  public:
   inline UploadResponse() : UploadResponse(nullptr) {}
   ~UploadResponse() override;
@@ -202,7 +202,7 @@ class UploadResponse final :
   private:
   friend class ::google::protobuf::internal::AnyMetadata;
   static ::absl::string_view FullMessageName() {
-    return "ncloud.UploadResponse";
+    return "CCcloud.UploadResponse";
   }
   protected:
   explicit UploadResponse(::google::protobuf::Arena* arena);
@@ -248,14 +248,14 @@ class UploadResponse final :
   void _internal_set_success(bool value);
 
   public:
-  // @@protoc_insertion_point(class_scope:ncloud.UploadResponse)
+  // @@protoc_insertion_point(class_scope:CCcloud.UploadResponse)
  private:
   class _Internal;
 
   friend class ::google::protobuf::internal::TcParser;
   static const ::google::protobuf::internal::TcParseTable<
       1, 2, 0,
-      37, 2>
+      38, 2>
       _table_;
   friend class ::google::protobuf::MessageLite;
   friend class ::google::protobuf::Arena;
@@ -281,7 +281,7 @@ class UploadResponse final :
 };// -------------------------------------------------------------------
 
 class UploadChunk final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ncloud.UploadChunk) */ {
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:CCcloud.UploadChunk) */ {
  public:
   inline UploadChunk() : UploadChunk(nullptr) {}
   ~UploadChunk() override;
@@ -395,7 +395,7 @@ class UploadChunk final :
   private:
   friend class ::google::protobuf::internal::AnyMetadata;
   static ::absl::string_view FullMessageName() {
-    return "ncloud.UploadChunk";
+    return "CCcloud.UploadChunk";
   }
   protected:
   explicit UploadChunk(::google::protobuf::Arena* arena);
@@ -447,14 +447,14 @@ class UploadChunk final :
   std::string* _internal_mutable_data();
 
   public:
-  // @@protoc_insertion_point(class_scope:ncloud.UploadChunk)
+  // @@protoc_insertion_point(class_scope:CCcloud.UploadChunk)
  private:
   class _Internal;
 
   friend class ::google::protobuf::internal::TcParser;
   static const ::google::protobuf::internal::TcParseTable<
       1, 2, 0,
-      35, 2>
+      36, 2>
       _table_;
   friend class ::google::protobuf::MessageLite;
   friend class ::google::protobuf::Arena;
@@ -480,7 +480,7 @@ class UploadChunk final :
 };// -------------------------------------------------------------------
 
 class DownloadRequest final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ncloud.DownloadRequest) */ {
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:CCcloud.DownloadRequest) */ {
  public:
   inline DownloadRequest() : DownloadRequest(nullptr) {}
   ~DownloadRequest() override;
@@ -594,7 +594,7 @@ class DownloadRequest final :
   private:
   friend class ::google::protobuf::internal::AnyMetadata;
   static ::absl::string_view FullMessageName() {
-    return "ncloud.DownloadRequest";
+    return "CCcloud.DownloadRequest";
   }
   protected:
   explicit DownloadRequest(::google::protobuf::Arena* arena);
@@ -629,14 +629,14 @@ class DownloadRequest final :
   std::string* _internal_mutable_filename();
 
   public:
-  // @@protoc_insertion_point(class_scope:ncloud.DownloadRequest)
+  // @@protoc_insertion_point(class_scope:CCcloud.DownloadRequest)
  private:
   class _Internal;
 
   friend class ::google::protobuf::internal::TcParser;
   static const ::google::protobuf::internal::TcParseTable<
       0, 1, 0,
-      39, 2>
+      40, 2>
       _table_;
   friend class ::google::protobuf::MessageLite;
   friend class ::google::protobuf::Arena;
@@ -661,7 +661,7 @@ class DownloadRequest final :
 };// -------------------------------------------------------------------
 
 class DownloadChunk final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ncloud.DownloadChunk) */ {
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:CCcloud.DownloadChunk) */ {
  public:
   inline DownloadChunk() : DownloadChunk(nullptr) {}
   ~DownloadChunk() override;
@@ -775,7 +775,7 @@ class DownloadChunk final :
   private:
   friend class ::google::protobuf::internal::AnyMetadata;
   static ::absl::string_view FullMessageName() {
-    return "ncloud.DownloadChunk";
+    return "CCcloud.DownloadChunk";
   }
   protected:
   explicit DownloadChunk(::google::protobuf::Arena* arena);
@@ -810,7 +810,7 @@ class DownloadChunk final :
   std::string* _internal_mutable_data();
 
   public:
-  // @@protoc_insertion_point(class_scope:ncloud.DownloadChunk)
+  // @@protoc_insertion_point(class_scope:CCcloud.DownloadChunk)
  private:
   class _Internal;
 
@@ -842,7 +842,7 @@ class DownloadChunk final :
 };// -------------------------------------------------------------------
 
 class DeleteResponse final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ncloud.DeleteResponse) */ {
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:CCcloud.DeleteResponse) */ {
  public:
   inline DeleteResponse() : DeleteResponse(nullptr) {}
   ~DeleteResponse() override;
@@ -956,7 +956,7 @@ class DeleteResponse final :
   private:
   friend class ::google::protobuf::internal::AnyMetadata;
   static ::absl::string_view FullMessageName() {
-    return "ncloud.DeleteResponse";
+    return "CCcloud.DeleteResponse";
   }
   protected:
   explicit DeleteResponse(::google::protobuf::Arena* arena);
@@ -1002,14 +1002,14 @@ class DeleteResponse final :
   void _internal_set_success(bool value);
 
   public:
-  // @@protoc_insertion_point(class_scope:ncloud.DeleteResponse)
+  // @@protoc_insertion_point(class_scope:CCcloud.DeleteResponse)
  private:
   class _Internal;
 
   friend class ::google::protobuf::internal::TcParser;
   static const ::google::protobuf::internal::TcParseTable<
       1, 2, 0,
-      37, 2>
+      38, 2>
       _table_;
   friend class ::google::protobuf::MessageLite;
   friend class ::google::protobuf::Arena;
@@ -1035,7 +1035,7 @@ class DeleteResponse final :
 };// -------------------------------------------------------------------
 
 class DeleteRequest final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ncloud.DeleteRequest) */ {
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:CCcloud.DeleteRequest) */ {
  public:
   inline DeleteRequest() : DeleteRequest(nullptr) {}
   ~DeleteRequest() override;
@@ -1149,7 +1149,7 @@ class DeleteRequest final :
   private:
   friend class ::google::protobuf::internal::AnyMetadata;
   static ::absl::string_view FullMessageName() {
-    return "ncloud.DeleteRequest";
+    return "CCcloud.DeleteRequest";
   }
   protected:
   explicit DeleteRequest(::google::protobuf::Arena* arena);
@@ -1184,14 +1184,14 @@ class DeleteRequest final :
   std::string* _internal_mutable_filename();
 
   public:
-  // @@protoc_insertion_point(class_scope:ncloud.DeleteRequest)
+  // @@protoc_insertion_point(class_scope:CCcloud.DeleteRequest)
  private:
   class _Internal;
 
   friend class ::google::protobuf::internal::TcParser;
   static const ::google::protobuf::internal::TcParseTable<
       0, 1, 0,
-      37, 2>
+      38, 2>
       _table_;
   friend class ::google::protobuf::MessageLite;
   friend class ::google::protobuf::Arena;
@@ -1238,7 +1238,7 @@ inline void UploadChunk::clear_filename() {
 }
 inline const std::string& UploadChunk::filename() const
     ABSL_ATTRIBUTE_LIFETIME_BOUND {
-  // @@protoc_insertion_point(field_get:ncloud.UploadChunk.filename)
+  // @@protoc_insertion_point(field_get:CCcloud.UploadChunk.filename)
   return _internal_filename();
 }
 template <typename Arg_, typename... Args_>
@@ -1247,11 +1247,11 @@ inline PROTOBUF_ALWAYS_INLINE void UploadChunk::set_filename(Arg_&& arg,
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
   ;
   _impl_.filename_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
-  // @@protoc_insertion_point(field_set:ncloud.UploadChunk.filename)
+  // @@protoc_insertion_point(field_set:CCcloud.UploadChunk.filename)
 }
 inline std::string* UploadChunk::mutable_filename() ABSL_ATTRIBUTE_LIFETIME_BOUND {
   std::string* _s = _internal_mutable_filename();
-  // @@protoc_insertion_point(field_mutable:ncloud.UploadChunk.filename)
+  // @@protoc_insertion_point(field_mutable:CCcloud.UploadChunk.filename)
   return _s;
 }
 inline const std::string& UploadChunk::_internal_filename() const {
@@ -1270,7 +1270,7 @@ inline std::string* UploadChunk::_internal_mutable_filename() {
 }
 inline std::string* UploadChunk::release_filename() {
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
-  // @@protoc_insertion_point(field_release:ncloud.UploadChunk.filename)
+  // @@protoc_insertion_point(field_release:CCcloud.UploadChunk.filename)
   return _impl_.filename_.Release();
 }
 inline void UploadChunk::set_allocated_filename(std::string* value) {
@@ -1281,7 +1281,7 @@ inline void UploadChunk::set_allocated_filename(std::string* value) {
           _impl_.filename_.Set("", GetArena());
         }
   #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:ncloud.UploadChunk.filename)
+  // @@protoc_insertion_point(field_set_allocated:CCcloud.UploadChunk.filename)
 }
 
 // bytes data = 2;
@@ -1291,7 +1291,7 @@ inline void UploadChunk::clear_data() {
 }
 inline const std::string& UploadChunk::data() const
     ABSL_ATTRIBUTE_LIFETIME_BOUND {
-  // @@protoc_insertion_point(field_get:ncloud.UploadChunk.data)
+  // @@protoc_insertion_point(field_get:CCcloud.UploadChunk.data)
   return _internal_data();
 }
 template <typename Arg_, typename... Args_>
@@ -1300,11 +1300,11 @@ inline PROTOBUF_ALWAYS_INLINE void UploadChunk::set_data(Arg_&& arg,
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
   ;
   _impl_.data_.SetBytes(static_cast<Arg_&&>(arg), args..., GetArena());
-  // @@protoc_insertion_point(field_set:ncloud.UploadChunk.data)
+  // @@protoc_insertion_point(field_set:CCcloud.UploadChunk.data)
 }
 inline std::string* UploadChunk::mutable_data() ABSL_ATTRIBUTE_LIFETIME_BOUND {
   std::string* _s = _internal_mutable_data();
-  // @@protoc_insertion_point(field_mutable:ncloud.UploadChunk.data)
+  // @@protoc_insertion_point(field_mutable:CCcloud.UploadChunk.data)
   return _s;
 }
 inline const std::string& UploadChunk::_internal_data() const {
@@ -1323,7 +1323,7 @@ inline std::string* UploadChunk::_internal_mutable_data() {
 }
 inline std::string* UploadChunk::release_data() {
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
-  // @@protoc_insertion_point(field_release:ncloud.UploadChunk.data)
+  // @@protoc_insertion_point(field_release:CCcloud.UploadChunk.data)
   return _impl_.data_.Release();
 }
 inline void UploadChunk::set_allocated_data(std::string* value) {
@@ -1334,7 +1334,7 @@ inline void UploadChunk::set_allocated_data(std::string* value) {
           _impl_.data_.Set("", GetArena());
         }
   #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:ncloud.UploadChunk.data)
+  // @@protoc_insertion_point(field_set_allocated:CCcloud.UploadChunk.data)
 }
 
 // -------------------------------------------------------------------
@@ -1347,12 +1347,12 @@ inline void UploadResponse::clear_success() {
   _impl_.success_ = false;
 }
 inline bool UploadResponse::success() const {
-  // @@protoc_insertion_point(field_get:ncloud.UploadResponse.success)
+  // @@protoc_insertion_point(field_get:CCcloud.UploadResponse.success)
   return _internal_success();
 }
 inline void UploadResponse::set_success(bool value) {
   _internal_set_success(value);
-  // @@protoc_insertion_point(field_set:ncloud.UploadResponse.success)
+  // @@protoc_insertion_point(field_set:CCcloud.UploadResponse.success)
 }
 inline bool UploadResponse::_internal_success() const {
   PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
@@ -1371,7 +1371,7 @@ inline void UploadResponse::clear_message() {
 }
 inline const std::string& UploadResponse::message() const
     ABSL_ATTRIBUTE_LIFETIME_BOUND {
-  // @@protoc_insertion_point(field_get:ncloud.UploadResponse.message)
+  // @@protoc_insertion_point(field_get:CCcloud.UploadResponse.message)
   return _internal_message();
 }
 template <typename Arg_, typename... Args_>
@@ -1380,11 +1380,11 @@ inline PROTOBUF_ALWAYS_INLINE void UploadResponse::set_message(Arg_&& arg,
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
   ;
   _impl_.message_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
-  // @@protoc_insertion_point(field_set:ncloud.UploadResponse.message)
+  // @@protoc_insertion_point(field_set:CCcloud.UploadResponse.message)
 }
 inline std::string* UploadResponse::mutable_message() ABSL_ATTRIBUTE_LIFETIME_BOUND {
   std::string* _s = _internal_mutable_message();
-  // @@protoc_insertion_point(field_mutable:ncloud.UploadResponse.message)
+  // @@protoc_insertion_point(field_mutable:CCcloud.UploadResponse.message)
   return _s;
 }
 inline const std::string& UploadResponse::_internal_message() const {
@@ -1403,7 +1403,7 @@ inline std::string* UploadResponse::_internal_mutable_message() {
 }
 inline std::string* UploadResponse::release_message() {
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
-  // @@protoc_insertion_point(field_release:ncloud.UploadResponse.message)
+  // @@protoc_insertion_point(field_release:CCcloud.UploadResponse.message)
   return _impl_.message_.Release();
 }
 inline void UploadResponse::set_allocated_message(std::string* value) {
@@ -1414,7 +1414,7 @@ inline void UploadResponse::set_allocated_message(std::string* value) {
           _impl_.message_.Set("", GetArena());
         }
   #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:ncloud.UploadResponse.message)
+  // @@protoc_insertion_point(field_set_allocated:CCcloud.UploadResponse.message)
 }
 
 // -------------------------------------------------------------------
@@ -1428,7 +1428,7 @@ inline void DownloadRequest::clear_filename() {
 }
 inline const std::string& DownloadRequest::filename() const
     ABSL_ATTRIBUTE_LIFETIME_BOUND {
-  // @@protoc_insertion_point(field_get:ncloud.DownloadRequest.filename)
+  // @@protoc_insertion_point(field_get:CCcloud.DownloadRequest.filename)
   return _internal_filename();
 }
 template <typename Arg_, typename... Args_>
@@ -1437,11 +1437,11 @@ inline PROTOBUF_ALWAYS_INLINE void DownloadRequest::set_filename(Arg_&& arg,
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
   ;
   _impl_.filename_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
-  // @@protoc_insertion_point(field_set:ncloud.DownloadRequest.filename)
+  // @@protoc_insertion_point(field_set:CCcloud.DownloadRequest.filename)
 }
 inline std::string* DownloadRequest::mutable_filename() ABSL_ATTRIBUTE_LIFETIME_BOUND {
   std::string* _s = _internal_mutable_filename();
-  // @@protoc_insertion_point(field_mutable:ncloud.DownloadRequest.filename)
+  // @@protoc_insertion_point(field_mutable:CCcloud.DownloadRequest.filename)
   return _s;
 }
 inline const std::string& DownloadRequest::_internal_filename() const {
@@ -1460,7 +1460,7 @@ inline std::string* DownloadRequest::_internal_mutable_filename() {
 }
 inline std::string* DownloadRequest::release_filename() {
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
-  // @@protoc_insertion_point(field_release:ncloud.DownloadRequest.filename)
+  // @@protoc_insertion_point(field_release:CCcloud.DownloadRequest.filename)
   return _impl_.filename_.Release();
 }
 inline void DownloadRequest::set_allocated_filename(std::string* value) {
@@ -1471,7 +1471,7 @@ inline void DownloadRequest::set_allocated_filename(std::string* value) {
           _impl_.filename_.Set("", GetArena());
         }
   #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:ncloud.DownloadRequest.filename)
+  // @@protoc_insertion_point(field_set_allocated:CCcloud.DownloadRequest.filename)
 }
 
 // -------------------------------------------------------------------
@@ -1485,7 +1485,7 @@ inline void DownloadChunk::clear_data() {
 }
 inline const std::string& DownloadChunk::data() const
     ABSL_ATTRIBUTE_LIFETIME_BOUND {
-  // @@protoc_insertion_point(field_get:ncloud.DownloadChunk.data)
+  // @@protoc_insertion_point(field_get:CCcloud.DownloadChunk.data)
   return _internal_data();
 }
 template <typename Arg_, typename... Args_>
@@ -1494,11 +1494,11 @@ inline PROTOBUF_ALWAYS_INLINE void DownloadChunk::set_data(Arg_&& arg,
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
   ;
   _impl_.data_.SetBytes(static_cast<Arg_&&>(arg), args..., GetArena());
-  // @@protoc_insertion_point(field_set:ncloud.DownloadChunk.data)
+  // @@protoc_insertion_point(field_set:CCcloud.DownloadChunk.data)
 }
 inline std::string* DownloadChunk::mutable_data() ABSL_ATTRIBUTE_LIFETIME_BOUND {
   std::string* _s = _internal_mutable_data();
-  // @@protoc_insertion_point(field_mutable:ncloud.DownloadChunk.data)
+  // @@protoc_insertion_point(field_mutable:CCcloud.DownloadChunk.data)
   return _s;
 }
 inline const std::string& DownloadChunk::_internal_data() const {
@@ -1517,7 +1517,7 @@ inline std::string* DownloadChunk::_internal_mutable_data() {
 }
 inline std::string* DownloadChunk::release_data() {
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
-  // @@protoc_insertion_point(field_release:ncloud.DownloadChunk.data)
+  // @@protoc_insertion_point(field_release:CCcloud.DownloadChunk.data)
   return _impl_.data_.Release();
 }
 inline void DownloadChunk::set_allocated_data(std::string* value) {
@@ -1528,7 +1528,7 @@ inline void DownloadChunk::set_allocated_data(std::string* value) {
           _impl_.data_.Set("", GetArena());
         }
   #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:ncloud.DownloadChunk.data)
+  // @@protoc_insertion_point(field_set_allocated:CCcloud.DownloadChunk.data)
 }
 
 // -------------------------------------------------------------------
@@ -1542,7 +1542,7 @@ inline void DeleteRequest::clear_filename() {
 }
 inline const std::string& DeleteRequest::filename() const
     ABSL_ATTRIBUTE_LIFETIME_BOUND {
-  // @@protoc_insertion_point(field_get:ncloud.DeleteRequest.filename)
+  // @@protoc_insertion_point(field_get:CCcloud.DeleteRequest.filename)
   return _internal_filename();
 }
 template <typename Arg_, typename... Args_>
@@ -1551,11 +1551,11 @@ inline PROTOBUF_ALWAYS_INLINE void DeleteRequest::set_filename(Arg_&& arg,
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
   ;
   _impl_.filename_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
-  // @@protoc_insertion_point(field_set:ncloud.DeleteRequest.filename)
+  // @@protoc_insertion_point(field_set:CCcloud.DeleteRequest.filename)
 }
 inline std::string* DeleteRequest::mutable_filename() ABSL_ATTRIBUTE_LIFETIME_BOUND {
   std::string* _s = _internal_mutable_filename();
-  // @@protoc_insertion_point(field_mutable:ncloud.DeleteRequest.filename)
+  // @@protoc_insertion_point(field_mutable:CCcloud.DeleteRequest.filename)
   return _s;
 }
 inline const std::string& DeleteRequest::_internal_filename() const {
@@ -1574,7 +1574,7 @@ inline std::string* DeleteRequest::_internal_mutable_filename() {
 }
 inline std::string* DeleteRequest::release_filename() {
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
-  // @@protoc_insertion_point(field_release:ncloud.DeleteRequest.filename)
+  // @@protoc_insertion_point(field_release:CCcloud.DeleteRequest.filename)
   return _impl_.filename_.Release();
 }
 inline void DeleteRequest::set_allocated_filename(std::string* value) {
@@ -1585,7 +1585,7 @@ inline void DeleteRequest::set_allocated_filename(std::string* value) {
           _impl_.filename_.Set("", GetArena());
         }
   #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:ncloud.DeleteRequest.filename)
+  // @@protoc_insertion_point(field_set_allocated:CCcloud.DeleteRequest.filename)
 }
 
 // -------------------------------------------------------------------
@@ -1598,12 +1598,12 @@ inline void DeleteResponse::clear_success() {
   _impl_.success_ = false;
 }
 inline bool DeleteResponse::success() const {
-  // @@protoc_insertion_point(field_get:ncloud.DeleteResponse.success)
+  // @@protoc_insertion_point(field_get:CCcloud.DeleteResponse.success)
   return _internal_success();
 }
 inline void DeleteResponse::set_success(bool value) {
   _internal_set_success(value);
-  // @@protoc_insertion_point(field_set:ncloud.DeleteResponse.success)
+  // @@protoc_insertion_point(field_set:CCcloud.DeleteResponse.success)
 }
 inline bool DeleteResponse::_internal_success() const {
   PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
@@ -1622,7 +1622,7 @@ inline void DeleteResponse::clear_message() {
 }
 inline const std::string& DeleteResponse::message() const
     ABSL_ATTRIBUTE_LIFETIME_BOUND {
-  // @@protoc_insertion_point(field_get:ncloud.DeleteResponse.message)
+  // @@protoc_insertion_point(field_get:CCcloud.DeleteResponse.message)
   return _internal_message();
 }
 template <typename Arg_, typename... Args_>
@@ -1631,11 +1631,11 @@ inline PROTOBUF_ALWAYS_INLINE void DeleteResponse::set_message(Arg_&& arg,
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
   ;
   _impl_.message_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
-  // @@protoc_insertion_point(field_set:ncloud.DeleteResponse.message)
+  // @@protoc_insertion_point(field_set:CCcloud.DeleteResponse.message)
 }
 inline std::string* DeleteResponse::mutable_message() ABSL_ATTRIBUTE_LIFETIME_BOUND {
   std::string* _s = _internal_mutable_message();
-  // @@protoc_insertion_point(field_mutable:ncloud.DeleteResponse.message)
+  // @@protoc_insertion_point(field_mutable:CCcloud.DeleteResponse.message)
   return _s;
 }
 inline const std::string& DeleteResponse::_internal_message() const {
@@ -1654,7 +1654,7 @@ inline std::string* DeleteResponse::_internal_mutable_message() {
 }
 inline std::string* DeleteResponse::release_message() {
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
-  // @@protoc_insertion_point(field_release:ncloud.DeleteResponse.message)
+  // @@protoc_insertion_point(field_release:CCcloud.DeleteResponse.message)
   return _impl_.message_.Release();
 }
 inline void DeleteResponse::set_allocated_message(std::string* value) {
@@ -1665,7 +1665,7 @@ inline void DeleteResponse::set_allocated_message(std::string* value) {
           _impl_.message_.Set("", GetArena());
         }
   #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:ncloud.DeleteResponse.message)
+  // @@protoc_insertion_point(field_set_allocated:CCcloud.DeleteResponse.message)
 }
 
 #ifdef __GNUC__
@@ -1673,7 +1673,7 @@ inline void DeleteResponse::set_allocated_message(std::string* value) {
 #endif  // __GNUC__
 
 // @@protoc_insertion_point(namespace_scope)
-}  // namespace ncloud
+}  // namespace CCcloud
 
 
 // @@protoc_insertion_point(global_scope)

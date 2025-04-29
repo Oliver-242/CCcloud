@@ -19,12 +19,12 @@
 #include <grpcpp/server_context.h>
 #include <grpcpp/impl/service_type.h>
 #include <grpcpp/support/sync_stream.h>
-namespace ncloud {
+namespace CCcloud {
 
 static const char* FileService_method_names[] = {
-  "/ncloud.FileService/Upload",
-  "/ncloud.FileService/Download",
-  "/ncloud.FileService/Delete",
+  "/CCcloud.FileService/Upload",
+  "/CCcloud.FileService/Download",
+  "/CCcloud.FileService/Delete",
 };
 
 std::unique_ptr< FileService::Stub> FileService::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
@@ -39,55 +39,55 @@ FileService::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channe
   , rpcmethod_Delete_(FileService_method_names[2], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
-::grpc::ClientWriter< ::ncloud::UploadChunk>* FileService::Stub::UploadRaw(::grpc::ClientContext* context, ::ncloud::UploadResponse* response) {
-  return ::grpc::internal::ClientWriterFactory< ::ncloud::UploadChunk>::Create(channel_.get(), rpcmethod_Upload_, context, response);
+::grpc::ClientWriter< ::CCcloud::UploadChunk>* FileService::Stub::UploadRaw(::grpc::ClientContext* context, ::CCcloud::UploadResponse* response) {
+  return ::grpc::internal::ClientWriterFactory< ::CCcloud::UploadChunk>::Create(channel_.get(), rpcmethod_Upload_, context, response);
 }
 
-void FileService::Stub::async::Upload(::grpc::ClientContext* context, ::ncloud::UploadResponse* response, ::grpc::ClientWriteReactor< ::ncloud::UploadChunk>* reactor) {
-  ::grpc::internal::ClientCallbackWriterFactory< ::ncloud::UploadChunk>::Create(stub_->channel_.get(), stub_->rpcmethod_Upload_, context, response, reactor);
+void FileService::Stub::async::Upload(::grpc::ClientContext* context, ::CCcloud::UploadResponse* response, ::grpc::ClientWriteReactor< ::CCcloud::UploadChunk>* reactor) {
+  ::grpc::internal::ClientCallbackWriterFactory< ::CCcloud::UploadChunk>::Create(stub_->channel_.get(), stub_->rpcmethod_Upload_, context, response, reactor);
 }
 
-::grpc::ClientAsyncWriter< ::ncloud::UploadChunk>* FileService::Stub::AsyncUploadRaw(::grpc::ClientContext* context, ::ncloud::UploadResponse* response, ::grpc::CompletionQueue* cq, void* tag) {
-  return ::grpc::internal::ClientAsyncWriterFactory< ::ncloud::UploadChunk>::Create(channel_.get(), cq, rpcmethod_Upload_, context, response, true, tag);
+::grpc::ClientAsyncWriter< ::CCcloud::UploadChunk>* FileService::Stub::AsyncUploadRaw(::grpc::ClientContext* context, ::CCcloud::UploadResponse* response, ::grpc::CompletionQueue* cq, void* tag) {
+  return ::grpc::internal::ClientAsyncWriterFactory< ::CCcloud::UploadChunk>::Create(channel_.get(), cq, rpcmethod_Upload_, context, response, true, tag);
 }
 
-::grpc::ClientAsyncWriter< ::ncloud::UploadChunk>* FileService::Stub::PrepareAsyncUploadRaw(::grpc::ClientContext* context, ::ncloud::UploadResponse* response, ::grpc::CompletionQueue* cq) {
-  return ::grpc::internal::ClientAsyncWriterFactory< ::ncloud::UploadChunk>::Create(channel_.get(), cq, rpcmethod_Upload_, context, response, false, nullptr);
+::grpc::ClientAsyncWriter< ::CCcloud::UploadChunk>* FileService::Stub::PrepareAsyncUploadRaw(::grpc::ClientContext* context, ::CCcloud::UploadResponse* response, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncWriterFactory< ::CCcloud::UploadChunk>::Create(channel_.get(), cq, rpcmethod_Upload_, context, response, false, nullptr);
 }
 
-::grpc::ClientReader< ::ncloud::DownloadChunk>* FileService::Stub::DownloadRaw(::grpc::ClientContext* context, const ::ncloud::DownloadRequest& request) {
-  return ::grpc::internal::ClientReaderFactory< ::ncloud::DownloadChunk>::Create(channel_.get(), rpcmethod_Download_, context, request);
+::grpc::ClientReader< ::CCcloud::DownloadChunk>* FileService::Stub::DownloadRaw(::grpc::ClientContext* context, const ::CCcloud::DownloadRequest& request) {
+  return ::grpc::internal::ClientReaderFactory< ::CCcloud::DownloadChunk>::Create(channel_.get(), rpcmethod_Download_, context, request);
 }
 
-void FileService::Stub::async::Download(::grpc::ClientContext* context, const ::ncloud::DownloadRequest* request, ::grpc::ClientReadReactor< ::ncloud::DownloadChunk>* reactor) {
-  ::grpc::internal::ClientCallbackReaderFactory< ::ncloud::DownloadChunk>::Create(stub_->channel_.get(), stub_->rpcmethod_Download_, context, request, reactor);
+void FileService::Stub::async::Download(::grpc::ClientContext* context, const ::CCcloud::DownloadRequest* request, ::grpc::ClientReadReactor< ::CCcloud::DownloadChunk>* reactor) {
+  ::grpc::internal::ClientCallbackReaderFactory< ::CCcloud::DownloadChunk>::Create(stub_->channel_.get(), stub_->rpcmethod_Download_, context, request, reactor);
 }
 
-::grpc::ClientAsyncReader< ::ncloud::DownloadChunk>* FileService::Stub::AsyncDownloadRaw(::grpc::ClientContext* context, const ::ncloud::DownloadRequest& request, ::grpc::CompletionQueue* cq, void* tag) {
-  return ::grpc::internal::ClientAsyncReaderFactory< ::ncloud::DownloadChunk>::Create(channel_.get(), cq, rpcmethod_Download_, context, request, true, tag);
+::grpc::ClientAsyncReader< ::CCcloud::DownloadChunk>* FileService::Stub::AsyncDownloadRaw(::grpc::ClientContext* context, const ::CCcloud::DownloadRequest& request, ::grpc::CompletionQueue* cq, void* tag) {
+  return ::grpc::internal::ClientAsyncReaderFactory< ::CCcloud::DownloadChunk>::Create(channel_.get(), cq, rpcmethod_Download_, context, request, true, tag);
 }
 
-::grpc::ClientAsyncReader< ::ncloud::DownloadChunk>* FileService::Stub::PrepareAsyncDownloadRaw(::grpc::ClientContext* context, const ::ncloud::DownloadRequest& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc::internal::ClientAsyncReaderFactory< ::ncloud::DownloadChunk>::Create(channel_.get(), cq, rpcmethod_Download_, context, request, false, nullptr);
+::grpc::ClientAsyncReader< ::CCcloud::DownloadChunk>* FileService::Stub::PrepareAsyncDownloadRaw(::grpc::ClientContext* context, const ::CCcloud::DownloadRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncReaderFactory< ::CCcloud::DownloadChunk>::Create(channel_.get(), cq, rpcmethod_Download_, context, request, false, nullptr);
 }
 
-::grpc::Status FileService::Stub::Delete(::grpc::ClientContext* context, const ::ncloud::DeleteRequest& request, ::ncloud::DeleteResponse* response) {
-  return ::grpc::internal::BlockingUnaryCall< ::ncloud::DeleteRequest, ::ncloud::DeleteResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_Delete_, context, request, response);
+::grpc::Status FileService::Stub::Delete(::grpc::ClientContext* context, const ::CCcloud::DeleteRequest& request, ::CCcloud::DeleteResponse* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::CCcloud::DeleteRequest, ::CCcloud::DeleteResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_Delete_, context, request, response);
 }
 
-void FileService::Stub::async::Delete(::grpc::ClientContext* context, const ::ncloud::DeleteRequest* request, ::ncloud::DeleteResponse* response, std::function<void(::grpc::Status)> f) {
-  ::grpc::internal::CallbackUnaryCall< ::ncloud::DeleteRequest, ::ncloud::DeleteResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_Delete_, context, request, response, std::move(f));
+void FileService::Stub::async::Delete(::grpc::ClientContext* context, const ::CCcloud::DeleteRequest* request, ::CCcloud::DeleteResponse* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::CCcloud::DeleteRequest, ::CCcloud::DeleteResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_Delete_, context, request, response, std::move(f));
 }
 
-void FileService::Stub::async::Delete(::grpc::ClientContext* context, const ::ncloud::DeleteRequest* request, ::ncloud::DeleteResponse* response, ::grpc::ClientUnaryReactor* reactor) {
+void FileService::Stub::async::Delete(::grpc::ClientContext* context, const ::CCcloud::DeleteRequest* request, ::CCcloud::DeleteResponse* response, ::grpc::ClientUnaryReactor* reactor) {
   ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_Delete_, context, request, response, reactor);
 }
 
-::grpc::ClientAsyncResponseReader< ::ncloud::DeleteResponse>* FileService::Stub::PrepareAsyncDeleteRaw(::grpc::ClientContext* context, const ::ncloud::DeleteRequest& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::ncloud::DeleteResponse, ::ncloud::DeleteRequest, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_Delete_, context, request);
+::grpc::ClientAsyncResponseReader< ::CCcloud::DeleteResponse>* FileService::Stub::PrepareAsyncDeleteRaw(::grpc::ClientContext* context, const ::CCcloud::DeleteRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::CCcloud::DeleteResponse, ::CCcloud::DeleteRequest, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_Delete_, context, request);
 }
 
-::grpc::ClientAsyncResponseReader< ::ncloud::DeleteResponse>* FileService::Stub::AsyncDeleteRaw(::grpc::ClientContext* context, const ::ncloud::DeleteRequest& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::CCcloud::DeleteResponse>* FileService::Stub::AsyncDeleteRaw(::grpc::ClientContext* context, const ::CCcloud::DeleteRequest& request, ::grpc::CompletionQueue* cq) {
   auto* result =
     this->PrepareAsyncDeleteRaw(context, request, cq);
   result->StartCall();
@@ -98,31 +98,31 @@ FileService::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       FileService_method_names[0],
       ::grpc::internal::RpcMethod::CLIENT_STREAMING,
-      new ::grpc::internal::ClientStreamingHandler< FileService::Service, ::ncloud::UploadChunk, ::ncloud::UploadResponse>(
+      new ::grpc::internal::ClientStreamingHandler< FileService::Service, ::CCcloud::UploadChunk, ::CCcloud::UploadResponse>(
           [](FileService::Service* service,
              ::grpc::ServerContext* ctx,
-             ::grpc::ServerReader<::ncloud::UploadChunk>* reader,
-             ::ncloud::UploadResponse* resp) {
+             ::grpc::ServerReader<::CCcloud::UploadChunk>* reader,
+             ::CCcloud::UploadResponse* resp) {
                return service->Upload(ctx, reader, resp);
              }, this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       FileService_method_names[1],
       ::grpc::internal::RpcMethod::SERVER_STREAMING,
-      new ::grpc::internal::ServerStreamingHandler< FileService::Service, ::ncloud::DownloadRequest, ::ncloud::DownloadChunk>(
+      new ::grpc::internal::ServerStreamingHandler< FileService::Service, ::CCcloud::DownloadRequest, ::CCcloud::DownloadChunk>(
           [](FileService::Service* service,
              ::grpc::ServerContext* ctx,
-             const ::ncloud::DownloadRequest* req,
-             ::grpc::ServerWriter<::ncloud::DownloadChunk>* writer) {
+             const ::CCcloud::DownloadRequest* req,
+             ::grpc::ServerWriter<::CCcloud::DownloadChunk>* writer) {
                return service->Download(ctx, req, writer);
              }, this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       FileService_method_names[2],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< FileService::Service, ::ncloud::DeleteRequest, ::ncloud::DeleteResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+      new ::grpc::internal::RpcMethodHandler< FileService::Service, ::CCcloud::DeleteRequest, ::CCcloud::DeleteResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
           [](FileService::Service* service,
              ::grpc::ServerContext* ctx,
-             const ::ncloud::DeleteRequest* req,
-             ::ncloud::DeleteResponse* resp) {
+             const ::CCcloud::DeleteRequest* req,
+             ::CCcloud::DeleteResponse* resp) {
                return service->Delete(ctx, req, resp);
              }, this)));
 }
@@ -130,21 +130,21 @@ FileService::Service::Service() {
 FileService::Service::~Service() {
 }
 
-::grpc::Status FileService::Service::Upload(::grpc::ServerContext* context, ::grpc::ServerReader< ::ncloud::UploadChunk>* reader, ::ncloud::UploadResponse* response) {
+::grpc::Status FileService::Service::Upload(::grpc::ServerContext* context, ::grpc::ServerReader< ::CCcloud::UploadChunk>* reader, ::CCcloud::UploadResponse* response) {
   (void) context;
   (void) reader;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status FileService::Service::Download(::grpc::ServerContext* context, const ::ncloud::DownloadRequest* request, ::grpc::ServerWriter< ::ncloud::DownloadChunk>* writer) {
+::grpc::Status FileService::Service::Download(::grpc::ServerContext* context, const ::CCcloud::DownloadRequest* request, ::grpc::ServerWriter< ::CCcloud::DownloadChunk>* writer) {
   (void) context;
   (void) request;
   (void) writer;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status FileService::Service::Delete(::grpc::ServerContext* context, const ::ncloud::DeleteRequest* request, ::ncloud::DeleteResponse* response) {
+::grpc::Status FileService::Service::Delete(::grpc::ServerContext* context, const ::CCcloud::DeleteRequest* request, ::CCcloud::DeleteResponse* response) {
   (void) context;
   (void) request;
   (void) response;
@@ -152,5 +152,5 @@ FileService::Service::~Service() {
 }
 
 
-}  // namespace ncloud
+}  // namespace CCcloud
 

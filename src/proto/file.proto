@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package ncloud;
+package CCcloud;
 
 service FileService {
   rpc Upload(stream UploadChunk) returns (UploadResponse);
