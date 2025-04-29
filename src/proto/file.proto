@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package ncloud;
+
+service FileService {
+  rpc Upload(stream UploadChunk) returns (UploadResponse);
+
+  rpc Download(DownloadRequest) returns (stream DownloadChunk);
+
+  rpc Delete(DeleteRequest) returns (DeleteResponse);
+}
+
+message UploadChunk {
+  string filename = 1;        // 只在第一个chunk中填；其余chunk复用
+  bytes data = 2;             // 文件数据片段
+}
+
+message UploadResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message DownloadRequest {
+  string filename = 1;
+}
+
+message DownloadChunk {
+  bytes data = 1;             // 文件数据片段
+}
+
+message DeleteRequest {
+  string filename = 1;
+}
+
+message DeleteResponse {
+  bool success = 1;
+  string message = 2;
+}

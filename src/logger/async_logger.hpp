@@ -10,6 +10,7 @@
 #include <sstream>
 #include <iomanip>
 #include <filesystem>
+#include <format>
 // #define DEBUG
 #ifdef DEBUG
 #include <iostream>
@@ -195,17 +196,33 @@ private:
         }
     }
 
-    std::string format_log_entry(const std::vector<LogEntry>& entries) {
+    // std::string format_log_entry(const std::vector<LogEntry>& entries) {
+    //     std::ostringstream oss;
+    //     for (const auto& entry : entries) {
+    //         std::string timestamp_str = std::format("{:%Y-%m-%d_%H-%M-%S.%f}", entry.timestamp);
+    //         oss << "[" << timestamp_str << "]";
+    //         oss << " [" << loglevel_to_string(entry.level) << "] ";
+    //         oss << entry.message << "\n";
+    //     }
+    //     return oss.str();
+    // }
+
+    std::string format_log_entry(const std::vector<LogEntry>& entries) {  //支持到微秒
         std::ostringstream oss;
         for (const auto& entry : entries) {
-            std::time_t t = std::chrono::system_clock::to_time_t(entry.timestamp);
-            std::tm tm_time;
+            auto in_time_t = std::chrono::system_clock::to_time_t(entry.timestamp);
+            auto micros = std::chrono::duration_cast<std::chrono::microseconds>(
+                entry.timestamp.time_since_epoch()).count() % 1000000;
+    
+            std::tm buf;
 #if defined(_WIN32) || defined(_WIN64)
-            localtime_s(&tm_time, &t);
+            localtime_s(&buf, &in_time_t);
 #else
-            localtime_r(&t, &tm_time);
+            localtime_r(&in_time_t, &buf);
 #endif
-            oss << "[" << std::put_time(&tm_time, "%Y-%m-%d %H:%M:%S") << "]";
+
+            oss << "[" << std::put_time(&buf, "%Y-%m-%d_%H:%M:%S");
+            oss << "." << std::setfill('0') << std::setw(6) << micros << "]";
             oss << " [" << loglevel_to_string(entry.level) << "] ";
             oss << entry.message << "\n";
         }

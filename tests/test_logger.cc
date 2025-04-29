@@ -1,16 +1,16 @@
-#include "logger/async_logger.hpp"
 #include <thread>
 #include <vector>
 #include <iostream>
 #include <chrono>
 
+#include "logger/async_logger.hpp"
 // #include "tools/lockfreequeue.hpp"
 #include "tools/RingBuffer.hpp"
 #include "tools/EBRQueue.hpp"
 
 
 int main() {
-    constexpr int thread_count = 128;
+    constexpr int thread_count = 12;
     constexpr int logs_per_thread = 100000;
 
     // 拿到全局logger实例（构造时已经start了）
