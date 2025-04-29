@@ -4,12 +4,21 @@
 #include <fstream>
 #include <filesystem>
 #include <iostream>
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid_io.hpp>
 
 #include "generated/file.grpc.pb.h"
 
+static std::string generate_uuid() {
+    static thread_local boost::uuids::random_generator generator;
+    return boost::uuids::to_string(generator());
+}
+
 class FileServiceImpl final : public CCcloud::FileService::Service {
 public:
-    grpc::Status Upload(grpc::ServerReader<CCcloud::UploadChunk>* reader,
+    grpc::Status Upload(grpc::ServerContext*,
+                        grpc::ServerReader<CCcloud::UploadChunk>* reader,
                         CCcloud::UploadResponse* response) override {
         namespace fs = std::filesystem;
 
@@ -41,7 +50,8 @@ public:
         return grpc::Status::OK;
     }
 
-    grpc::Status Download(const CCcloud::DownloadRequest* request,
+    grpc::Status Download(grpc::ServerContext*,
+                          const CCcloud::DownloadRequest* request,
                           grpc::ServerWriter<CCcloud::DownloadChunk>* writer) override {
         namespace fs = std::filesystem;
 

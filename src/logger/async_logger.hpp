@@ -11,6 +11,7 @@
 #include <iomanip>
 #include <filesystem>
 #include <format>
+#include <grpcpp/grpcpp.h>
 // #define DEBUG
 #ifdef DEBUG
 #include <iostream>
@@ -18,10 +19,10 @@
 
 #include "tools/BaseQueue.hpp"
 
-#define DEFAULT_LOG_PATH "/home/personal/CCcloud/logs" // 默认日志文件路径
-static constexpr int LOGENTRY_BATCH_THRESHOLD = 2048; // 批量写入日志的阈值
+#define DEFAULT_LOG_PATH "/home/olivercai/personal/CCcloud/logs" // 默认日志文件路径
+static constexpr int LOGENTRY_BATCH_THRESHOLD = 256; // 批量写入日志的阈值
 static constexpr int LOGENTRY_BATCH_TIMEOUT_MS = 256; // 批量写入日志的超时时间
-static constexpr int MAX_LOG_FILE_SIZE = 32 * 1024 * 1024; // 每个日志文件最大大小 10MB
+static constexpr int MAX_LOG_FILE_SIZE = 32 * 1024 * 1024; // 每个日志文件最大大小 32MB
 
 
 enum class Level {
@@ -30,15 +31,68 @@ enum class Level {
     ERROR
 };
 
+enum class LogType {
+    PREPARE,
+    COMMIT,
+    ABORT
+};
+
+enum class OperationType {
+    UPLOAD,
+    DOWNLOAD,
+    DELETE
+};
+
 struct LogEntry {
     std::chrono::system_clock::time_point timestamp;
+    std::string uuid;
     Level level;    // INFO, WARN, ERROR
-    std::string message;  
+    std::string client_ip;
+    std::string server_ip;
+    uint32_t client_port;
+    uint32_t server_port;
+    OperationType operation;           // Upload / Download / Delete
+    std::string params;              // filename=abc.jpg size=2048
+    LogType log_type;
+    grpc::StatusCode status_code;
+    std::string error_message;
+    long long duration_ms;
 
-    LogEntry(const Level& lvl, const std::string& msg)
-        : timestamp(std::chrono::system_clock::now()), level(lvl), message(msg) {}
+    LogEntry()
+    : timestamp(std::chrono::system_clock::now()),
+      level(Level::INFO),
+      client_port(0),
+      server_port(0),
+      operation(OperationType::UPLOAD),
+      log_type(LogType::PREPARE),
+      status_code(grpc::StatusCode::OK),
+      duration_ms(0) {}
 
-    LogEntry() : timestamp(std::chrono::system_clock::now()), level(Level::INFO), message("") {}
+    LogEntry(Level lvl,
+            const std::string& uuid,
+            const std::string& cip,
+            const std::string& sip,
+            uint32_t cport,
+            uint32_t sport,
+            OperationType op,
+            const std::string& param,
+            LogType ltype,
+            grpc::StatusCode code,
+            const std::string& errmsg,
+            long long dur)
+        : timestamp(std::chrono::system_clock::now()),
+          uuid(uuid),
+          level(lvl),
+          client_ip(cip),
+          server_ip(sip),
+          client_port(cport),
+          server_port(sport),
+          operation(op),
+          params(param),
+          log_type(ltype),
+          status_code(code),
+          error_message(errmsg),
+          duration_ms(dur) {}
 
     LogEntry(const LogEntry&) = default;
     LogEntry(LogEntry&&) = default;
@@ -169,7 +223,7 @@ private:
             std::unique_lock<std::mutex> lock(mutex_);
             cv_.wait_for(
                 lock, 
-                std::chrono::milliseconds(LOGENTRY_BATCH_TIMEOUT_MS), 
+                std::chrono::milliseconds(LOGENTRY_BATCH_TIMEOUT_MS),    // 超时后即便没满足批量更新的日志数量也会落盘
                 [this]() { return !running_ || !log_queue_.empty(); }
             );
             lock.unlock();
@@ -196,44 +250,71 @@ private:
         }
     }
 
-    // std::string format_log_entry(const std::vector<LogEntry>& entries) {
-    //     std::ostringstream oss;
-    //     for (const auto& entry : entries) {
-    //         std::string timestamp_str = std::format("{:%Y-%m-%d_%H-%M-%S.%f}", entry.timestamp);
-    //         oss << "[" << timestamp_str << "]";
-    //         oss << " [" << loglevel_to_string(entry.level) << "] ";
-    //         oss << entry.message << "\n";
-    //     }
-    //     return oss.str();
-    // }
-
     std::string format_log_entry(const std::vector<LogEntry>& entries) {  //支持到微秒
         std::ostringstream oss;
-        for (const auto& entry : entries) {
-            auto in_time_t = std::chrono::system_clock::to_time_t(entry.timestamp);
-            auto micros = std::chrono::duration_cast<std::chrono::microseconds>(
-                entry.timestamp.time_since_epoch()).count() % 1000000;
-    
-            std::tm buf;
-#if defined(_WIN32) || defined(_WIN64)
-            localtime_s(&buf, &in_time_t);
-#else
-            localtime_r(&in_time_t, &buf);
-#endif
 
-            oss << "[" << std::put_time(&buf, "%Y-%m-%d_%H:%M:%S");
-            oss << "." << std::setfill('0') << std::setw(6) << micros << "]";
-            oss << " [" << loglevel_to_string(entry.level) << "] ";
-            oss << entry.message << "\n";
+    for (const auto& entry : entries) {
+        auto in_time_t = std::chrono::system_clock::to_time_t(entry.timestamp);
+        auto micros = std::chrono::duration_cast<std::chrono::microseconds>(
+            entry.timestamp.time_since_epoch()).count() % 1000000;
+
+        std::tm buf;
+    #if defined(_WIN32) || defined(_WIN64)
+        localtime_s(&buf, &in_time_t);
+    #else
+        localtime_r(&in_time_t, &buf);
+    #endif
+
+        oss << "[" << std::put_time(&buf, "%Y-%m-%d_%H:%M:%S");
+        oss << "." << std::setfill('0') << std::setw(6) << micros << "]";
+        oss << " [" << entry.uuid << "]";
+        oss << " [" << loglevel_to_string(entry.level) << "]";
+        oss << " [" << logtype_to_string(entry.log_type) << "]";
+        oss << " [" << operation_to_string(entry.operation) << "]";
+
+        oss << " client=" << entry.client_ip << ":" << entry.client_port;
+        oss << " server=" << entry.server_ip << ":" << entry.server_port;
+
+        if (entry.log_type == LogType::PREPARE) {
+            oss << " params=" << entry.params;
+        } else if (entry.log_type == LogType::COMMIT || entry.log_type == LogType::ABORT) {
+            oss << " result=" << (entry.status_code == grpc::StatusCode::OK ? "OK" : "FAILED");
+            oss << " code=" << static_cast<int>(entry.status_code);
+            if (!entry.error_message.empty()) {
+                oss << " error=" << entry.error_message;
+            }
+            oss << " time=" << entry.duration_ms << "ms";
         }
-        return oss.str();
+
+        oss << "\n";
     }
 
-    std::string loglevel_to_string(const Level& level) {
+    return oss.str();
+    }
+
+    std::string loglevel_to_string(const Level& level) const {
         switch (level) {
             case Level::INFO: return "INFO";
             case Level::WARN: return "WARN";
             case Level::ERROR: return "ERROR";
+            default: return "UNKNOWN";
+        }
+    }
+
+    std::string logtype_to_string(const LogType& type) const {
+        switch (type) {
+            case LogType::PREPARE: return "PREPARE";
+            case LogType::COMMIT: return "COMMIT";
+            case LogType::ABORT: return "ABORT";
+            default: return "UNKNOWN";
+        }
+    }
+
+    std::string operation_to_string(OperationType op) {
+        switch (op) {
+            case OperationType::UPLOAD: return "UPLOAD";
+            case OperationType::DOWNLOAD: return "DOWNLOAD";
+            case OperationType::DELETE: return "DELETE";
             default: return "UNKNOWN";
         }
     }
