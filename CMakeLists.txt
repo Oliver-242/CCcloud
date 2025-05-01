@@ -18,8 +18,20 @@ set(BIN_OUTPUT_ROOT ${CMAKE_BINARY_DIR}/bin)
 add_subdirectory(tests)
 
 # ----------------- Server -----------------
+add_executable(naive_server
+    src/server/naive_server.cc
+    ${PROTO_SRC}
+)
+
+target_link_libraries(naive_server
+    gRPC::grpc++
+    protobuf::libprotobuf
+    Boost::headers
+)
+
 add_executable(CCcloud_server
     src/server/server.cc
+    src/server/AsyncCall.hpp
     ${PROTO_SRC}
 )
 
@@ -30,8 +42,19 @@ target_link_libraries(CCcloud_server
 )
 
 # ----------------- Client -----------------
+add_executable(naive_client
+    src/client/naive_client.cc
+    ${PROTO_SRC}
+)
+
+target_link_libraries(naive_client
+    gRPC::grpc++
+    protobuf::libprotobuf
+    Boost::headers
+)
+
 add_executable(CCcloud_client
-    src/client/client.cc
+    src/client/async_client.cc
     ${PROTO_SRC}
 )
 

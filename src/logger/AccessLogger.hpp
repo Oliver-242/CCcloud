@@ -28,7 +28,6 @@ public:
         parse_context_info(context, log);
         log.params = params;
         log.status_code = grpc::StatusCode::OK;
-        static_assert(std::is_class_v<AsyncLogger<>>, "AsyncLogger not visible");
 
         AsyncLogger<>::instance().append(std::move(log));
     }
