@@ -18,6 +18,7 @@
 #endif
 
 #include "tools/BaseQueue.hpp"
+#include "tools/EBRQueue.hpp"
 
 #define DEFAULT_LOG_PATH "/home/olivercai/personal/CCcloud/logs" // 默认日志文件路径
 static constexpr int LOGENTRY_BATCH_THRESHOLD = 256; // 批量写入日志的阈值
@@ -108,7 +109,7 @@ concept HasValueType = requires {
 template <typename T>
 concept DerivedFromBaseQueue = HasValueType<T> && std::is_base_of_v<BaseQueue<typename T::value_type>, T>;
 
-template <DerivedFromBaseQueue Q>
+template <DerivedFromBaseQueue Q = MPMCQueue<LogEntry>>
 class AsyncLogger {
 public:
     template <typename... Args>
@@ -147,6 +148,11 @@ public:
         if (log_thread_.joinable()) {
             log_thread_.join();
         }
+    }
+
+    void set_filepath(const std::string& file_path) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        file_path_ = file_path;
     }
 
 private:

@@ -134,7 +134,7 @@ for (int i = 0; i < thread_count; ++i) {
 - **CPU**: 12-core processor (24 logic cores)
 - **Memory**: 32GB RAM (7500MT/s)
 - **Operating System**: WSL2
-- **Compiler**: g++ 13.3
+- **Compiler**: g++ 14.2
 - **C++ Standard**: C++20
 
 #### Queue Backends

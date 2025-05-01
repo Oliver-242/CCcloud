@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <atomic>
 #include <thread>
@@ -19,9 +20,9 @@
 #include "BaseQueue.hpp"
 
 #ifdef __cpp_lib_hardware_interference_size
-    constexpr size_t hardware_destructive_interference_size = std::hardware_destructive_interference_size;
+    inline constexpr size_t hardware_destructive_interference_size = std::hardware_destructive_interference_size;
 #else
-    constexpr size_t hardware_destructive_interference_size = 64;
+    inline constexpr size_t hardware_destructive_interference_size = 64;
 #endif
 
 class EBRManager {

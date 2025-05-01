@@ -9,103 +9,128 @@
 #include <boost/uuid/uuid_io.hpp>
 
 #include "generated/file.grpc.pb.h"
+#include "logger/AccessLogger.hpp"
 
-static std::string generate_uuid() {
-    static thread_local boost::uuids::random_generator generator;
-    return boost::uuids::to_string(generator());
-}
 
 class FileServiceImpl final : public CCcloud::FileService::Service {
-public:
-    grpc::Status Upload(grpc::ServerContext*,
-                        grpc::ServerReader<CCcloud::UploadChunk>* reader,
-                        CCcloud::UploadResponse* response) override {
-        namespace fs = std::filesystem;
-
-        CCcloud::UploadChunk chunk;
-        std::ofstream ofs;
-        std::string filename;
-
-        // 确保 data 目录存在
-        fs::create_directories("data");
-
-        while (reader->Read(&chunk)) {
-            if (!ofs.is_open()) {
-                if (chunk.filename().empty()) {
-                    return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Filename required in first chunk");
+    public:
+        grpc::Status Upload(grpc::ServerContext* context,
+                            grpc::ServerReader<CCcloud::UploadChunk>* reader,
+                            CCcloud::UploadResponse* response) override {
+            using namespace std::chrono;
+    
+            auto uuid = AccessLogger::generate_uuid();
+            auto start = steady_clock::now();
+    
+            std::string filename = "[unknown]";
+            std::ofstream ofs;
+            bool opened = false;
+            size_t total_bytes = 0;
+    
+            AccessLogger::log_prepare(uuid, context, OperationType::UPLOAD, "upload started");
+    
+            CCcloud::UploadChunk chunk;
+            while (reader->Read(&chunk)) {
+                if (!opened) {
+                    filename = chunk.filename();
+                    std::filesystem::create_directories("uploads/");
+                    ofs.open("uploads/" + filename, std::ios::binary);
+                    if (!ofs.is_open()) {
+                        auto duration = duration_cast<milliseconds>(steady_clock::now() - start).count();
+                        AccessLogger::log_abort(uuid, context, OperationType::UPLOAD,
+                                                grpc::StatusCode::INTERNAL,
+                                                "failed to open file",
+                                                duration);
+                        return grpc::Status(grpc::StatusCode::INTERNAL, "Failed to open file");
+                    }
+                    opened = true;
                 }
-                filename = chunk.filename();
-                ofs.open("data/" + filename, std::ios::binary);
-                if (!ofs.is_open()) {
-                    return grpc::Status(grpc::StatusCode::INTERNAL, "Failed to open output file");
-                }
+                ofs.write(chunk.data().data(), chunk.data().size());
+                total_bytes += chunk.data().size();
             }
-
-            ofs.write(chunk.data().data(), chunk.data().size());
-        }
-
-        ofs.close();
-        response->set_success(true);
-        response->set_message("Upload successful");
-        return grpc::Status::OK;
-    }
-
-    grpc::Status Download(grpc::ServerContext*,
-                          const CCcloud::DownloadRequest* request,
-                          grpc::ServerWriter<CCcloud::DownloadChunk>* writer) override {
-        namespace fs = std::filesystem;
-
-        std::string filename = request->filename();
-        std::string full_path = "data/" + filename;
-
-        if (!fs::exists(full_path)) {
-            return grpc::Status(grpc::StatusCode::NOT_FOUND, "File not found");
-        }
-
-        std::ifstream ifs(full_path, std::ios::binary);
-        if (!ifs.is_open()) {
-            return grpc::Status(grpc::StatusCode::INTERNAL, "Failed to open file for reading");
-        }
-
-        const size_t buffer_size = 4096;
-        std::vector<char> buffer(buffer_size);
-
-        while (ifs.read(buffer.data(), buffer_size) || ifs.gcount() > 0) {
-            CCcloud::DownloadChunk chunk;
-            chunk.set_data(buffer.data(), ifs.gcount());
-            if (!writer->Write(chunk)) {
-                break;  // 客户端关闭连接
-            }
-        }
-
-        ifs.close();
-        return grpc::Status::OK;
-    }
-
-    grpc::Status Delete(grpc::ServerContext*,
-                        const CCcloud::DeleteRequest* request,
-                        CCcloud::DeleteResponse* response) override {
-        namespace fs = std::filesystem;
-
-        std::string filename = request->filename();
-        std::string full_path = "data/" + filename;
-
-        if (!fs::exists(full_path)) {
-            response->set_success(false);
-            response->set_message("File not found");
+    
+            ofs.close();
+            response->set_message("Upload successful");
+    
+            auto duration = duration_cast<milliseconds>(steady_clock::now() - start).count();
+            AccessLogger::log_commit(uuid, context, OperationType::UPLOAD,
+                                     "filename=" + filename + " size=" + std::to_string(total_bytes),
+                                     grpc::StatusCode::OK, duration);
+    
             return grpc::Status::OK;
         }
-
-        std::error_code ec;
-        bool removed = fs::remove(full_path, ec);
-        if (!removed || ec) {
-            response->set_success(false);
-            response->set_message("Failed to delete file: " + ec.message());
+    
+        grpc::Status Download(grpc::ServerContext* context,
+                              const CCcloud::DownloadRequest* request,
+                              grpc::ServerWriter<CCcloud::DownloadChunk>* writer) override {
+            using namespace std::chrono;
+    
+            auto uuid = AccessLogger::generate_uuid();
+            auto start = steady_clock::now();
+    
+            std::string filename = request->filename();
+            AccessLogger::log_prepare(uuid, context, OperationType::DOWNLOAD,
+                                      "filename=" + filename);
+    
+            std::ifstream ifs("uploads/" + filename, std::ios::binary);
+            if (!ifs.is_open()) {
+                auto duration = duration_cast<milliseconds>(steady_clock::now() - start).count();
+                AccessLogger::log_abort(uuid, context, OperationType::DOWNLOAD,
+                                        grpc::StatusCode::NOT_FOUND,
+                                        "file not found",
+                                        duration);
+                return grpc::Status(grpc::StatusCode::NOT_FOUND, "File not found");
+            }
+    
+            constexpr size_t BUF_SIZE = 4096;
+            char buffer[BUF_SIZE];
+            size_t total_bytes = 0;
+    
+            while (ifs.read(buffer, BUF_SIZE) || ifs.gcount()) {
+                CCcloud::DownloadChunk chunk;
+                chunk.set_data(buffer, ifs.gcount());
+                writer->Write(chunk);
+                total_bytes += ifs.gcount();
+            }
+    
+            ifs.close();
+            auto duration = duration_cast<milliseconds>(steady_clock::now() - start).count();
+            AccessLogger::log_commit(uuid, context, OperationType::DOWNLOAD,
+                                     "filename=" + filename + " size=" + std::to_string(total_bytes),
+                                     grpc::StatusCode::OK, duration);
+    
             return grpc::Status::OK;
         }
-
-        response->set_success(true);
-        response->set_message("File deleted");
-        return grpc::Status::OK;
-    }
-};
+    
+        grpc::Status Delete(grpc::ServerContext* context,
+                            const CCcloud::DeleteRequest* request,
+                            CCcloud::DeleteResponse* response) override {
+            using namespace std::chrono;
+    
+            auto uuid = AccessLogger::generate_uuid();
+            auto start = steady_clock::now();
+    
+            std::string filename = request->filename();
+            AccessLogger::log_prepare(uuid, context, OperationType::DELETE,
+                                      "filename=" + filename);
+    
+            std::string filepath = "uploads/" + filename;
+            grpc::StatusCode status;
+            std::string message;
+    
+            if (std::filesystem::remove(filepath)) {
+                response->set_message("Deleted successfully");
+                status = grpc::StatusCode::OK;
+            } else {
+                response->set_message("Delete failed or file not found");
+                status = grpc::StatusCode::NOT_FOUND;
+            }
+    
+            auto duration = duration_cast<milliseconds>(steady_clock::now() - start).count();
+            AccessLogger::log_commit(uuid, context, OperationType::DELETE,
+                                     "filename=" + filename,
+                                     status, duration);
+    
+            return grpc::Status(status, response->message());
+        }
+    };
