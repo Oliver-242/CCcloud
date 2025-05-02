@@ -20,8 +20,8 @@ int main() {
     std::cout << "✅ Async gRPC Server listening on " << server_address << std::endl;
 
     new AsyncUploadCall(&service, cq.get());
-    // new AsyncDownloadCall(&service, cq.get());
-    // new AsyncDeleteCall(&service, cq.get());
+    new AsyncDownloadCall(&service, cq.get());
+    new AsyncDeleteCall(&service, cq.get());
 
     const int kThreadCount = 24;
     std::vector<std::thread> workers;

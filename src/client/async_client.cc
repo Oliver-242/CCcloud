@@ -8,7 +8,10 @@
 #include <chrono>
 #include <cstdlib>
 #include <cstring>
+#include <string>
 #include <stdexcept>
+#include <utility> // For std::move, std::min
+#include <numeric> // For std::iota
 
 #include "generated/file.grpc.pb.h"
 
@@ -18,24 +21,26 @@ using grpc::ClientAsyncWriter;
 using grpc::ClientContext;
 using grpc::CompletionQueue;
 using grpc::Status;
+using grpc::ClientAsyncReader; // For server streaming client side (Download)
+using grpc::ClientAsyncResponseReader; // For unary client side (Delete)
 
-// Use const int instead of static constinit if C++20 is not strictly required or for broader compatibility
+
 static const int concurrency_default = 128;
 static const int chunks_default = 100;
-static const long long chunk_size_default = 9128;
+static const long long chunk_size_default = 40960;
 
 int concurrency = concurrency_default;
 int chunks = chunks_default;
 long long chunk_size = chunk_size_default;
 
 
-struct UploadTask {
-    unique_ptr<ClientContext> context;
-    unique_ptr<ClientAsyncWriter<CCcloud::UploadChunk>> writer;
-    CCcloud::UploadResponse response;
-    Status status;
-    // Removed: void* tag; // tag will be received locally in run_upload
+struct TaskResource {
+    int id; // 任务ID
+    shared_ptr<Channel> channel;
+    unique_ptr<CompletionQueue> cq; // 每个任务线程有自己的 CQ
+    shared_ptr<TaskResource> self_ptr; // 用于作为 CQ 事件的 tag，指向自身
 };
+
 
 template <typename T>
 T parseSingle(const std::string& value, const std::string& argName) {
@@ -58,10 +63,8 @@ T parseSingle(const std::string& value, const std::string& argName) {
         }
         return result;
     } catch (const std::invalid_argument& e) {
-        // Re-throw with argName context
         throw std::invalid_argument("Invalid value for argument '" + argName + "': " + e.what());
     } catch (const std::out_of_range& e) {
-        // Re-throw with argName context
         throw std::out_of_range("Value for argument '" + argName + "' is out of range: " + e.what());
     }
 }
@@ -117,7 +120,7 @@ bool parseArgs(int argc, char** argv) {
 }
 
 std::string generate_dummy_data(size_t size) {
-    static const char* pattern = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    static const char* pattern = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz~!@#$%^&*()_+-={}[]|;:',./?><";
     static const size_t pattern_len = strlen(pattern);
 
     std::string s;
@@ -133,120 +136,233 @@ std::string generate_dummy_data(size_t size) {
     return s;
 }
 
-// run_upload 函数接收该线程专属的 CompletionQueue 的 unique_ptr 所有权
-void run_upload(int id, int chunks, int chunk_size, shared_ptr<Channel> channel, unique_ptr<CompletionQueue> cq) {
-    auto stub = CCcloud::FileService::NewStub(channel);
-    // shared_ptr ensures UploadTask lives until no tags or smart pointers reference it
-    auto task = make_shared<UploadTask>();
-
-    task->context = make_unique<ClientContext>();
-
-    // Initiate the asynchronous upload call. Pass task.get() as the tag.
-    task->writer = stub->AsyncUpload(task->context.get(), &(task->response), cq.get(), (void*)task.get());
-
-    void* received_tag = nullptr; // Local variable to receive the tag
-    bool ok_cq = false; // Local variable to receive the ok status of the operation
-
-    // --- Wait for AsyncUpload start ---
-    // Blocking wait on *this thread's* dedicated CQ for the initial event.
-    // cq->Next returns true if an event was dequeued, false if the CQ is shutting down.
-    // ok_cq indicates if the operation associated with the tag was successful.
-    if (!cq->Next(&received_tag, &ok_cq) || !ok_cq) {
-         cerr << "[Task " << id << "] Failed to start upload call or CQ shut down before start." << endl;
-         // No cleanup needed for task pointer here, shared_ptr handles it.
-         // CQ will be shut down and drained later implicitly when unique_ptr goes out of scope.
-         // Explicit shutdown/drain is safer though.
-         // For simplicity in this test, we just return if initial call fails.
-         return;
+// Function to handle CQ shutdown and draining for a given TaskResource
+void shutdown_and_drain_cq(shared_ptr<TaskResource> task) {
+    // std::cout << "[Task " << task->id << "] Shutting down CQ..." << std::endl;
+    if (task->cq) {
+        task->cq->Shutdown(); // Initiate shutdown
+        void* received_tag = nullptr;
+        bool ok_cq = false;
+        // Drain any remaining events. Next will return false when queue is empty after shutdown.
+        while (task->cq->Next(&received_tag, &ok_cq)) {
+            // Any tags received here after Shutdown() are events that were
+            // enqueued before Shutdown() was called but processed after.
+            // In this model, they should relate to this task's op.
+            // assert(received_tag == (void*)task->self_ptr.get()); // Optional assert
+            // std::cout << "[Task " << task->id << "] Drained a late tag: " << received_tag << std::endl; // Optional debug log
+        }
+        // std::cout << "[Task " << task->id << "] CQ drained." << std::endl; // Optional debug log
+    } else {
+        cerr << "[Task " << task->id << "] CQ was not initialized, skipping shutdown/drain." << endl;
     }
-    // Optional safety check: Assert that the received tag is the one we expect.
-    // assert(received_tag == (void*)task.get());
+}
 
 
-    // --- Send chunks ---
+// Function to perform only the Upload RPC for a task thread
+void run_upload_only(shared_ptr<TaskResource> task, int chunks, long long chunk_size) {
+    auto stub = CCcloud::FileService::NewStub(task->channel);
+    void* received_tag = nullptr;
+    bool ok_cq = false;
+
+    unique_ptr<ClientContext> upload_ctx = make_unique<ClientContext>();
+    CCcloud::UploadResponse upload_response;
+    Status upload_status;
+    unique_ptr<ClientAsyncWriter<CCcloud::UploadChunk>> upload_writer;
+
+    // Initiate upload call. Use task->self_ptr.get() as the tag.
+    upload_writer = stub->AsyncUpload(upload_ctx.get(), &upload_response, task->cq.get(), (void*)task->self_ptr.get());
+    // Wait for AsyncUpload start
+    if (!task->cq->Next(&received_tag, &ok_cq) || !ok_cq) {
+        cerr << "[Task " << task->id << "] Upload Failed: Failed to start upload call or CQ shut down before start." << endl;
+        upload_status = Status(grpc::StatusCode::INTERNAL, "Failed to initiate call");
+        // No goto needed, just proceed to cleanup for this function
+        goto upload_cleanup;
+    }
+    // assert(received_tag == (void*)task->self_ptr.get());
+
+    // Send chunks
     for (int i = 0; i < chunks; ++i) {
         CCcloud::UploadChunk chunk;
-        // Set filename only in the first chunk
-        if (i == 0) {
-            chunk.set_filename("test_" + to_string(id) + ".txt");
-        }
+        if (i == 0) chunk.set_filename("test_" + to_string(task->id) + ".bin"); // Use .bin extension
         chunk.set_data(generate_dummy_data(chunk_size));
-
-        // Initiate async write. Pass task.get() as the tag.
-        task->writer->Write(chunk, (void*)task.get());
-
+        // Use task->self_ptr.get() as the tag.
+        upload_writer->Write(chunk, (void*)task->self_ptr.get());
         // Wait for this specific Write to complete on *this thread's* CQ.
-        // We must wait for the previous write to complete before initiating the next one
-        // in this per-op blocking model.
-        if (!cq->Next(&received_tag, &ok_cq) || !ok_cq) {
-            cerr << "[Task " << id << "] Failed waiting for Write " << i << " completion or CQ shut down." << endl;
-            // If Write failed (!ok_cq), the RPC is likely broken. Break loop and try to finish.
-            // assert(received_tag == (void*)task.get()); // Check which tag was returned
-            break; // Exit chunk loop
+        if (!task->cq->Next(&received_tag, &ok_cq) || !ok_cq) {
+            cerr << "[Task " << task->id << "] Upload Failed: Failed waiting for Write " << i << " completion or CQ shut down." << endl;
+            upload_status = Status(grpc::StatusCode::INTERNAL, "Write failed");
+            break; // Exit write loop, attempt to finish
         }
-        // Optional safety check: assert(received_tag == (void*)task.get());
+        // assert(received_tag == (void*)task->self_ptr.get());
     }
 
-    // --- Signal end of writes ---
-    // Only proceed if the last operation was ok (or if loop finished normally).
-    // ok_cq reflects the status of the last cq->Next call.
-    if (ok_cq) {
-        task->writer->WritesDone((void*)task.get());
-        // Wait for WritesDone to complete on *this thread's* CQ.
-        if (!cq->Next(&received_tag, &ok_cq)) { // ok_cq here indicates op success
-             cerr << "[Task " << id << "] Failed waiting for WritesDone completion or CQ shut down." << endl;
-             // If Next returns false, it means CQ is shutting down, ok_cq is also false.
-             ok_cq = false; // Explicitly set ok_cq to false if Next returned false
+    // Signal end of writes
+    if (ok_cq) { // Only if last Write was ok
+        upload_writer->WritesDone((void*)task->self_ptr.get());
+        if (!task->cq->Next(&received_tag, &ok_cq)) ok_cq = false;
+        // assert(received_tag == (void*)task->self_ptr.get());
+    } else {
+         // If write loop broke early, ok_cq is already false. Try to finish anyway.
+         if (upload_writer) {
+             upload_writer->Finish(&upload_status, (void*)task->self_ptr.get());
+             task->cq->Next(&received_tag, &ok_cq); // Wait for finish
+         }
+         goto upload_finished_check; // Skip the successful Finish path
+    }
+
+    // Finish upload RPC (Successful WritesDone path)
+    if (ok_cq) { // Only if WritesDone (or last Write) was ok
+        if (upload_writer) {
+            upload_writer->Finish(&upload_status, (void*)task->self_ptr.get());
+             if (!task->cq->Next(&received_tag, &ok_cq)) {
+                 cerr << "[Task " << task->id << "] Upload Failed: Failed waiting for RPC Finish completion or CQ shut down." << endl;
+                 upload_status = Status(grpc::StatusCode::INTERNAL, "Finish wait failed");
+             }
+             // assert(received_tag == (void*)task->self_ptr.get());
+        } else {
+             upload_status = Status(grpc::StatusCode::INTERNAL, "Upload writer not initialized before Finish");
         }
-        // Optional safety check: assert(received_tag == (void*)task.get());
     } else {
-        // If we failed earlier (e.g., write failed), the RPC might be in a bad state.
-        // The subsequent Finish might fail, or we might need to Cancel it.
-        // task->context->TryCancel(); // Consider cancelling the RPC asynchronously
-        // For this test, let's proceed to Finish regardless, it should handle cleanup.
-        // assert(received_tag == (void*)task.get()); // Check which tag was returned
+         // Should not reach here if ok_cq was false from WritesDone in the previous block
+         cerr << "[Task " << task->id << "] Upload logic error: Should not reach here." << endl;
+         upload_status = Status(grpc::StatusCode::INTERNAL, "Logic error after WritesDone");
     }
 
 
-    // --- Finish the RPC ---
-    // Initiate Finish operation. Pass task.get() as the tag.
-    // This MUST be called to get the final status and complete the RPC.
-    task->writer->Finish(&task->status, (void*)task.get());
-    // Wait for Finish to complete on *this thread's* CQ.
-    if (!cq->Next(&received_tag, &ok_cq)) {
-         cerr << "[Task " << id << "] Failed waiting for RPC Finish completion or CQ shut down." << endl;
-         // ok_cq might be false, task->status might be non-OK.
-         // assert(received_tag == (void*)task.get()); // Check which tag was returned
-    }
-    // Optional safety check: assert(received_tag == (void*)task.get());
-
-
-    // Check final status
-    if (task->status.ok()) {
-        cout << "[Task " << id << "] Upload success: " << task->response.message() << endl;
+upload_finished_check: // Label for goto within this function
+    if (upload_status.ok()) {
+        cout << "[Task " << task->id << "] Upload success: " << upload_response.message() << endl;
     } else {
-        cerr << "[Task " << id << "] Upload failed: " << task->status.error_message() << endl;
+        cerr << "[Task " << task->id << "] Upload failed: " << upload_status.error_message() << endl;
+    }
+
+upload_cleanup: // Label for cleanup within this function
+    // --- CQ Shutdown and Drain ---
+    shutdown_and_drain_cq(task);
+
+    // The TaskResource object and its owned CQ will be automatically cleaned up
+    // when the shared_ptr 'task' goes out of scope at the end of this function.
+}
+
+
+// Function to perform only the Download RPC for a task thread
+void run_download_only(shared_ptr<TaskResource> task) {
+     auto stub = CCcloud::FileService::NewStub(task->channel);
+     void* received_tag = nullptr;
+     bool ok_cq = false;
+
+     unique_ptr<ClientContext> download_ctx = make_unique<ClientContext>();
+     CCcloud::DownloadRequest download_request;
+     Status download_status; // Final status for the download RPC
+     unique_ptr<ClientAsyncReader<CCcloud::DownloadChunk>> download_reader; // Client side reader for server streaming
+     CCcloud::DownloadChunk download_chunk; // Reusable chunk message for receiving data
+
+     download_request.set_filename("test_" + to_string(task->id) + ".bin");
+
+     // Initiate download call. Use task->self_ptr.get() as the tag.
+     download_reader = stub->AsyncDownload(download_ctx.get(), download_request, task->cq.get(), (void*)task->self_ptr.get());
+
+     // Wait for AsyncDownload start
+      if (!task->cq->Next(&received_tag, &ok_cq) || !ok_cq) {
+         cerr << "[Task " << task->id << "] Download Failed: Failed to start download call or CQ shut down before start." << endl;
+         download_status = Status(grpc::StatusCode::INTERNAL, "Failed to initiate call");
+         goto download_cleanup; // Jump to cleanup
+     }
+     // assert(received_tag == (void*)task->self_ptr.get());
+
+     // Read chunks
+     while (true) {
+         // Initiate async read for the next chunk. Use task->self_ptr.get() as the tag.
+         download_reader->Read(&download_chunk, (void*)task->self_ptr.get());
+         // Wait for Read completion
+          if (!task->cq->Next(&received_tag, &ok_cq)) {
+              cerr << "[Task " << task->id << "] Download Failed: Failed waiting for Read completion or CQ shut down." << endl;
+              ok_cq = false; // CQ shutdown means fail
+              break; // Exit read loop
+          }
+          // assert(received_tag == (void*)task->self_ptr.get());
+
+         if (!ok_cq) {
+             // Read operation itself failed (!ok_cq). This indicates end of stream after the last message
+             // has been read, OR an error occurred during streaming.
+             break; // Exit read loop - normal end or error
+         }
+
+         // ok_cq is true: Process received chunk data
+         // std::cout << "[Task " << task->id << "] Received " << download_chunk.data().size() << " bytes for download." << std::endl; // Optional log
+         // In a real app, you'd write this data to a file or process it.
+     }
+
+     // Finish download RPC (gets final status)
+     // This MUST be called after the read loop finishes (!ok_cq from Read) to get the final status.
+     // Use task->self_ptr.get() as the tag.
+     if (download_reader) {
+         download_reader->Finish(&download_status, (void*)task->self_ptr.get());
+         // Wait for Finish completion
+         if (!task->cq->Next(&received_tag, &ok_cq)) {
+              cerr << "[Task " << task->id << "] Download Failed: Failed waiting for Finish completion or CQ shut down." << endl;
+              // Status might not be set correctly if Finish wait failed.
+         }
+         // assert(received_tag == (void*)task->self_ptr.get());
+     } else {
+          download_status = Status(grpc::StatusCode::INTERNAL, "Download reader not initialized");
+     }
+
+
+download_cleanup: // Label for cleanup within this function
+     if (download_status.ok()) {
+         cout << "[Task " << task->id << "] Download success." << endl;
+     } else {
+         cerr << "[Task " << task->id << "] Download failed: " << download_status.error_message() << endl;
+     }
+
+     // --- CQ Shutdown and Drain ---
+     shutdown_and_drain_cq(task);
+}
+
+
+// Function to perform only the Delete RPC for a task thread
+void run_delete_only(shared_ptr<TaskResource> task) {
+    auto stub = CCcloud::FileService::NewStub(task->channel);
+    void* received_tag = nullptr;
+    bool ok_cq = false;
+
+    unique_ptr<ClientContext> delete_ctx = make_unique<ClientContext>();
+    CCcloud::DeleteRequest delete_request;
+    CCcloud::DeleteResponse delete_response; // Response message for unary RPC
+    Status delete_status; // Final status for unary RPC
+    unique_ptr<ClientAsyncResponseReader<CCcloud::DeleteResponse>> delete_response_reader; // Unary RPC client side uses ClientAsyncResponseReader
+
+    delete_request.set_filename("test_" + to_string(task->id) + ".bin");
+
+    // Initiate delete call (unary RPC)
+    delete_response_reader = stub->AsyncDelete(delete_ctx.get(), delete_request, task->cq.get());
+    // The Finish method for a unary client RPC includes sending the request
+    // and waiting for the response/status. The tag is returned when it's all done.
+    // Use task->self_ptr.get() as the tag.
+    if (delete_response_reader) {
+        delete_response_reader->Finish(&delete_response, &delete_status, (void*)task->self_ptr.get());
+        // Wait for the entire unary RPC (Delete) to complete
+        if (!task->cq->Next(&received_tag, &ok_cq)) {
+             cerr << "[Task " << task->id << "] Delete Failed: Failed waiting for RPC completion or CQ shut down." << endl;
+             // Status might not be set correctly.
+        }
+        // assert(received_tag == (void*)task->self_ptr.get());
+    } else {
+        delete_status = Status(grpc::StatusCode::INTERNAL, "Delete response reader not initialized");
+    }
+
+
+    if (delete_status.ok()) {
+        cout << "[Task " << task->id << "] Delete success: " << delete_response.message() << endl;
+    } else {
+        cerr << "[Task " << task->id << "] Delete failed: " << delete_status.error_message() << endl;
     }
 
     // --- CQ Shutdown and Drain ---
-    // This thread's CQ has completed its work for this RPC.
-    // Correctly shut down the CQ and drain any pending events before destroying it.
-    cq->Shutdown(); // Initiate shutdown
-    // Drain any remaining events. Next will return false when queue is empty after shutdown.
-    while (cq->Next(&received_tag, &ok_cq)) {
-        // Any tags received here after Shutdown() are events that were
-        // enqueued before Shutdown() was called but processed after.
-        // For this simple blocking model, they should still be task.get(),
-        // but in more complex scenarios, you might need to handle them.
-        // assert(received_tag == (void*)task.get()); // Should still be task.get() for this task's CQ
-    }
-    // The unique_ptr<CompletionQueue> 'cq' goes out of scope here, destroying the CQ.
-    // This is now safe after the CQ has been properly shut down and drained.
-
-    // The shared_ptr<UploadTask> 'task' goes out of scope here, cleaning up the task object.
-    // This ensures the task object is alive while its tags might be processed by cq->Next,
-    // and the CQ is properly managed.
+    shutdown_and_drain_cq(task);
 }
+
 
 int main(int argc, char** argv) {
     std::cout << "Usage: " << argv[0] << " [--concurrency=<num>] [--chunks=<num>] [--chunk_size=<size>]" << std::endl;
@@ -260,35 +376,93 @@ int main(int argc, char** argv) {
     // Using localhost:9527 as the server address
     auto channel = grpc::CreateChannel("localhost:9527", grpc::InsecureChannelCredentials());
 
-    // Removed: CompletionQueue cq; // Don't use a single shared CQ for blocking per-op threads
+    auto total_program_start_time = chrono::steady_clock::now();
 
-    vector<thread> workers;
-    // Vector to hold unique_ptrs to CompletionQueues, managing their lifetime
-    vector<unique_ptr<CompletionQueue>> cqs;
-
-    auto start = chrono::steady_clock::now();
+    // --- UPLOAD PHASE ---
+    cout << "\n--- Starting Upload Phase ---" << endl;
+    auto upload_phase_start_time = chrono::steady_clock::now();
+    vector<thread> upload_workers;
+    vector<shared_ptr<TaskResource>> upload_tasks; // Resources for upload phase
 
     for (int i = 0; i < concurrency; ++i) {
-        // Create a unique CompletionQueue for each thread/RPC
-        auto thread_cq = make_unique<CompletionQueue>();
-        // Store the unique_ptr in the vector to manage its lifetime
-        cqs.push_back(std::move(thread_cq));
-        // Pass the unique_ptr by moving it into the thread's constructor arguments.
-        // The thread now owns this specific CQ.
-        workers.emplace_back(run_upload, i, chunks, chunk_size, channel, std::move(cqs.back()));
+        auto task = make_shared<TaskResource>();
+        task->id = i;
+        task->channel = channel;
+        task->cq = make_unique<CompletionQueue>(); // Create a unique CQ for this task thread
+        task->self_ptr = task; // Set the self-reference shared_ptr for the tag
+        upload_tasks.push_back(task); // Store the task resource
+
+        // Create a thread and pass the shared_ptr<TaskResource> by value (copied).
+        upload_workers.emplace_back(run_upload_only, task, chunks, chunk_size);
     }
 
-    // Join all the threads. Main thread waits here until all workers finish.
-    for (auto& t : workers) t.join();
+    // Join all Upload threads
+    for (auto& t : upload_workers) t.join();
+    auto upload_phase_end_time = chrono::steady_clock::now();
+    auto upload_phase_duration = chrono::duration_cast<chrono::milliseconds>(upload_phase_end_time - upload_phase_start_time).count();
+    cout << "--- Upload Phase Finished in " << upload_phase_duration << " ms ---" << endl;
+    // upload_tasks vector goes out of scope here, cleaning up Upload TaskResources and their CQs.
+    // upload_workers vector goes out of scope here.
 
-    // The 'cqs' vector goes out of scope here after all threads have joined.
-    // Each unique_ptr in the vector will be destroyed. Since each CQ was properly
-    // shut down and drained within its thread (in run_upload), destroying the unique_ptr
-    // (and thus the CQ) is now safe.
 
-    auto duration = chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now() - start).count();
-    cout << "\nTotal time: " << duration << " ms for " << concurrency << " uploads." << endl;
-    cout << "Avg: " << duration / concurrency << " ms/upload." << endl;
+    // --- DOWNLOAD PHASE ---
+    cout << "\n--- Starting Download Phase ---" << endl;
+    auto download_phase_start_time = chrono::steady_clock::now();
+    vector<thread> download_workers;
+    vector<shared_ptr<TaskResource>> download_tasks; // Resources for download phase
+
+    for (int i = 0; i < concurrency; ++i) {
+        auto task = make_shared<TaskResource>();
+        task->id = i;
+        task->channel = channel;
+        task->cq = make_unique<CompletionQueue>(); // Create a unique CQ for this task thread
+        task->self_ptr = task; // Set the self-reference shared_ptr for the tag
+        download_tasks.push_back(task); // Store the task resource
+
+        // Create a thread and pass the shared_ptr<TaskResource> by value (copied).
+        download_workers.emplace_back(run_download_only, task);
+    }
+
+    // Join all Download threads
+    for (auto& t : download_workers) t.join();
+    auto download_phase_end_time = chrono::steady_clock::now();
+    auto download_phase_duration = chrono::duration_cast<chrono::milliseconds>(download_phase_end_time - download_phase_start_time).count();
+    cout << "--- Download Phase Finished in " << download_phase_duration << " ms ---" << endl;
+    // download_tasks vector goes out of scope here.
+    // download_workers vector goes out of scope here.
+
+
+    // --- DELETE PHASE ---
+    cout << "\n--- Starting Delete Phase ---" << endl;
+    auto delete_phase_start_time = chrono::steady_clock::now();
+    vector<thread> delete_workers;
+    vector<shared_ptr<TaskResource>> delete_tasks; // Resources for delete phase
+
+    for (int i = 0; i < concurrency; ++i) {
+        auto task = make_shared<TaskResource>();
+        task->id = i;
+        task->channel = channel;
+        task->cq = make_unique<CompletionQueue>(); // Create a unique CQ for this task thread
+        task->self_ptr = task; // Set the self-reference shared_ptr for the tag
+        delete_tasks.push_back(task); // Store the task resource
+
+        // Create a thread and pass the shared_ptr<TaskResource> by value (copied).
+        delete_workers.emplace_back(run_delete_only, task);
+    }
+
+    // Join all Delete threads
+    for (auto& t : delete_workers) t.join();
+    auto delete_phase_end_time = chrono::steady_clock::now();
+    auto delete_phase_duration = chrono::duration_cast<chrono::milliseconds>(delete_phase_end_time - delete_phase_start_time).count();
+    cout << "--- Delete Phase Finished in " << delete_phase_duration << " ms ---" << endl;
+    // delete_tasks vector goes out of scope here.
+    // delete_workers vector goes out of scope here.
+
+
+    auto total_program_execution_duration = chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now() - total_program_start_time).count();
+    cout << "\n--- All Phases Completed ---" << endl;
+    cout << "Total program execution time: " << total_program_execution_duration << " ms for " << concurrency << " tasks." << endl;
+
 
     return 0;
 }
