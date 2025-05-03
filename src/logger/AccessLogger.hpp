@@ -15,8 +15,9 @@ public:
         return boost::uuids::to_string(gen());
     }
 
+    template <typename _CT>
     static void log_prepare(const std::string& uuid,
-                            grpc::ServerContext* context,
+                            _CT* context,
                             OperationType op,
                             const std::string& params) {
         LogEntry log;
@@ -32,8 +33,9 @@ public:
         AsyncLogger<>::instance().append(std::move(log));
     }
 
+    template <typename _CT>
     static void log_commit(const std::string& uuid,
-                           grpc::ServerContext* context,
+                           _CT* context,
                            OperationType op,
                            const std::string& params,
                            grpc::StatusCode code,
@@ -54,8 +56,9 @@ public:
         AsyncLogger<>::instance().append(std::move(log));
     }
 
+    template <typename _CT>
     static void log_abort(const std::string& uuid,
-                          grpc::ServerContext* context,
+                          _CT* context,
                           OperationType op,
                           grpc::StatusCode code,
                           const std::string& reason,
@@ -64,7 +67,8 @@ public:
     }
 
 private:
-    static void parse_context_info(grpc::ServerContext* context, LogEntry& log) {
+    template <typename _CT>
+    static void parse_context_info(_CT* context, LogEntry& log) {
         std::string peer = context->peer();  // ipv4:192.168.1.5:5000
         log.client_ip = peer;
         log.client_port = 0;  // 可补充解析

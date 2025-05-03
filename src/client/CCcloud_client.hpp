@@ -24,7 +24,7 @@ public:
             return false;
         }
 
-        const size_t chunk_size = 4096;
+        const size_t chunk_size = 409600;
         std::vector<char> buffer(chunk_size);
         bool first = true;
 

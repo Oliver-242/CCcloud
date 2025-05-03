@@ -158,7 +158,6 @@ void shutdown_and_drain_cq(shared_ptr<TaskResource> task) {
 }
 
 
-// Function to perform only the Upload RPC for a task thread
 void run_upload_only(shared_ptr<TaskResource> task, int chunks, long long chunk_size) {
     auto stub = CCcloud::FileService::NewStub(task->channel);
     void* received_tag = nullptr;
@@ -169,80 +168,55 @@ void run_upload_only(shared_ptr<TaskResource> task, int chunks, long long chunk_
     Status upload_status;
     unique_ptr<ClientAsyncWriter<CCcloud::UploadChunk>> upload_writer;
 
-    // Initiate upload call. Use task->self_ptr.get() as the tag.
-    upload_writer = stub->AsyncUpload(upload_ctx.get(), &upload_response, task->cq.get(), (void*)task->self_ptr.get());
-    // Wait for AsyncUpload start
-    if (!task->cq->Next(&received_tag, &ok_cq) || !ok_cq) {
-        cerr << "[Task " << task->id << "] Upload Failed: Failed to start upload call or CQ shut down before start." << endl;
-        upload_status = Status(grpc::StatusCode::INTERNAL, "Failed to initiate call");
-        // No goto needed, just proceed to cleanup for this function
-        goto upload_cleanup;
-    }
-    // assert(received_tag == (void*)task->self_ptr.get());
+    enum class UploadStep { START, WRITE, WRITES_DONE, FINISH };
 
-    // Send chunks
+    // Start Upload RPC
+    upload_writer = stub->AsyncUpload(upload_ctx.get(), &upload_response, task->cq.get(), (void*)UploadStep::START);
+    if (!task->cq->Next(&received_tag, &ok_cq) || !ok_cq || received_tag != (void*)UploadStep::START) {
+        cerr << "[Task " << task->id << "] Upload failed to start." << endl;
+        return;
+    }
+
+    // Write chunks one by one
     for (int i = 0; i < chunks; ++i) {
         CCcloud::UploadChunk chunk;
-        if (i == 0) chunk.set_filename("test_" + to_string(task->id) + ".bin"); // Use .bin extension
+        if (i == 0) chunk.set_filename("test_" + to_string(task->id) + ".bin");
         chunk.set_data(generate_dummy_data(chunk_size));
-        // Use task->self_ptr.get() as the tag.
-        upload_writer->Write(chunk, (void*)task->self_ptr.get());
-        // Wait for this specific Write to complete on *this thread's* CQ.
-        if (!task->cq->Next(&received_tag, &ok_cq) || !ok_cq) {
-            cerr << "[Task " << task->id << "] Upload Failed: Failed waiting for Write " << i << " completion or CQ shut down." << endl;
-            upload_status = Status(grpc::StatusCode::INTERNAL, "Write failed");
-            break; // Exit write loop, attempt to finish
+
+        upload_writer->Write(chunk, (void*)UploadStep::WRITE);
+        if (!task->cq->Next(&received_tag, &ok_cq) || !ok_cq || received_tag != (void*)UploadStep::WRITE) {
+            cerr << "[Task " << task->id << "] Upload failed during write " << i << "." << endl;
+            upload_writer->Finish(&upload_status, (void*)UploadStep::FINISH);
+            task->cq->Next(&received_tag, &ok_cq);  // Try to finish cleanly
+            return;
         }
-        // assert(received_tag == (void*)task->self_ptr.get());
+    }
+    // Finish writing
+    upload_writer->WritesDone((void*)UploadStep::WRITES_DONE);
+
+    if (!task->cq->Next(&received_tag, &ok_cq) || !ok_cq || received_tag != (void*)UploadStep::WRITES_DONE) {
+        cerr << "[Task " << task->id << "] Upload failed: WritesDone error." << endl;
+        upload_writer->Finish(&upload_status, (void*)UploadStep::FINISH);
+        task->cq->Next(&received_tag, &ok_cq);
+        return;
     }
 
-    // Signal end of writes
-    if (ok_cq) { // Only if last Write was ok
-        upload_writer->WritesDone((void*)task->self_ptr.get());
-        if (!task->cq->Next(&received_tag, &ok_cq)) ok_cq = false;
-        // assert(received_tag == (void*)task->self_ptr.get());
-    } else {
-         // If write loop broke early, ok_cq is already false. Try to finish anyway.
-         if (upload_writer) {
-             upload_writer->Finish(&upload_status, (void*)task->self_ptr.get());
-             task->cq->Next(&received_tag, &ok_cq); // Wait for finish
-         }
-         goto upload_finished_check; // Skip the successful Finish path
+    // Wait for RPC finish
+    upload_writer->Finish(&upload_status, (void*)UploadStep::FINISH);
+    if (!task->cq->Next(&received_tag, &ok_cq) || received_tag != (void*)UploadStep::FINISH) {
+        cerr << "[Task " << task->id << "] Upload failed: Finish wait error." << endl;
+        return;
     }
 
-    // Finish upload RPC (Successful WritesDone path)
-    if (ok_cq) { // Only if WritesDone (or last Write) was ok
-        if (upload_writer) {
-            upload_writer->Finish(&upload_status, (void*)task->self_ptr.get());
-             if (!task->cq->Next(&received_tag, &ok_cq)) {
-                 cerr << "[Task " << task->id << "] Upload Failed: Failed waiting for RPC Finish completion or CQ shut down." << endl;
-                 upload_status = Status(grpc::StatusCode::INTERNAL, "Finish wait failed");
-             }
-             // assert(received_tag == (void*)task->self_ptr.get());
-        } else {
-             upload_status = Status(grpc::StatusCode::INTERNAL, "Upload writer not initialized before Finish");
-        }
-    } else {
-         // Should not reach here if ok_cq was false from WritesDone in the previous block
-         cerr << "[Task " << task->id << "] Upload logic error: Should not reach here." << endl;
-         upload_status = Status(grpc::StatusCode::INTERNAL, "Logic error after WritesDone");
-    }
-
-
-upload_finished_check: // Label for goto within this function
     if (upload_status.ok()) {
         cout << "[Task " << task->id << "] Upload success: " << upload_response.message() << endl;
     } else {
         cerr << "[Task " << task->id << "] Upload failed: " << upload_status.error_message() << endl;
     }
 
-upload_cleanup: // Label for cleanup within this function
-    // --- CQ Shutdown and Drain ---
     shutdown_and_drain_cq(task);
-
-    // The TaskResource object and its owned CQ will be automatically cleaned up
-    // when the shared_ptr 'task' goes out of scope at the end of this function.
 }
+
 
 
 // Function to perform only the Download RPC for a task thread
@@ -405,58 +379,58 @@ int main(int argc, char** argv) {
     // upload_workers vector goes out of scope here.
 
 
-    // --- DOWNLOAD PHASE ---
-    cout << "\n--- Starting Download Phase ---" << endl;
-    auto download_phase_start_time = chrono::steady_clock::now();
-    vector<thread> download_workers;
-    vector<shared_ptr<TaskResource>> download_tasks; // Resources for download phase
+    // // --- DOWNLOAD PHASE ---
+    // cout << "\n--- Starting Download Phase ---" << endl;
+    // auto download_phase_start_time = chrono::steady_clock::now();
+    // vector<thread> download_workers;
+    // vector<shared_ptr<TaskResource>> download_tasks; // Resources for download phase
 
-    for (int i = 0; i < concurrency; ++i) {
-        auto task = make_shared<TaskResource>();
-        task->id = i;
-        task->channel = channel;
-        task->cq = make_unique<CompletionQueue>(); // Create a unique CQ for this task thread
-        task->self_ptr = task; // Set the self-reference shared_ptr for the tag
-        download_tasks.push_back(task); // Store the task resource
+    // for (int i = 0; i < concurrency; ++i) {
+    //     auto task = make_shared<TaskResource>();
+    //     task->id = i;
+    //     task->channel = channel;
+    //     task->cq = make_unique<CompletionQueue>(); // Create a unique CQ for this task thread
+    //     task->self_ptr = task; // Set the self-reference shared_ptr for the tag
+    //     download_tasks.push_back(task); // Store the task resource
 
-        // Create a thread and pass the shared_ptr<TaskResource> by value (copied).
-        download_workers.emplace_back(run_download_only, task);
-    }
+    //     // Create a thread and pass the shared_ptr<TaskResource> by value (copied).
+    //     download_workers.emplace_back(run_download_only, task);
+    // }
 
-    // Join all Download threads
-    for (auto& t : download_workers) t.join();
-    auto download_phase_end_time = chrono::steady_clock::now();
-    auto download_phase_duration = chrono::duration_cast<chrono::milliseconds>(download_phase_end_time - download_phase_start_time).count();
-    cout << "--- Download Phase Finished in " << download_phase_duration << " ms ---" << endl;
-    // download_tasks vector goes out of scope here.
-    // download_workers vector goes out of scope here.
+    // // Join all Download threads
+    // for (auto& t : download_workers) t.join();
+    // auto download_phase_end_time = chrono::steady_clock::now();
+    // auto download_phase_duration = chrono::duration_cast<chrono::milliseconds>(download_phase_end_time - download_phase_start_time).count();
+    // cout << "--- Download Phase Finished in " << download_phase_duration << " ms ---" << endl;
+    // // download_tasks vector goes out of scope here.
+    // // download_workers vector goes out of scope here.
 
 
-    // --- DELETE PHASE ---
-    cout << "\n--- Starting Delete Phase ---" << endl;
-    auto delete_phase_start_time = chrono::steady_clock::now();
-    vector<thread> delete_workers;
-    vector<shared_ptr<TaskResource>> delete_tasks; // Resources for delete phase
+    // // --- DELETE PHASE ---
+    // cout << "\n--- Starting Delete Phase ---" << endl;
+    // auto delete_phase_start_time = chrono::steady_clock::now();
+    // vector<thread> delete_workers;
+    // vector<shared_ptr<TaskResource>> delete_tasks; // Resources for delete phase
 
-    for (int i = 0; i < concurrency; ++i) {
-        auto task = make_shared<TaskResource>();
-        task->id = i;
-        task->channel = channel;
-        task->cq = make_unique<CompletionQueue>(); // Create a unique CQ for this task thread
-        task->self_ptr = task; // Set the self-reference shared_ptr for the tag
-        delete_tasks.push_back(task); // Store the task resource
+    // for (int i = 0; i < concurrency; ++i) {
+    //     auto task = make_shared<TaskResource>();
+    //     task->id = i;
+    //     task->channel = channel;
+    //     task->cq = make_unique<CompletionQueue>(); // Create a unique CQ for this task thread
+    //     task->self_ptr = task; // Set the self-reference shared_ptr for the tag
+    //     delete_tasks.push_back(task); // Store the task resource
 
-        // Create a thread and pass the shared_ptr<TaskResource> by value (copied).
-        delete_workers.emplace_back(run_delete_only, task);
-    }
+    //     // Create a thread and pass the shared_ptr<TaskResource> by value (copied).
+    //     delete_workers.emplace_back(run_delete_only, task);
+    // }
 
-    // Join all Delete threads
-    for (auto& t : delete_workers) t.join();
-    auto delete_phase_end_time = chrono::steady_clock::now();
-    auto delete_phase_duration = chrono::duration_cast<chrono::milliseconds>(delete_phase_end_time - delete_phase_start_time).count();
-    cout << "--- Delete Phase Finished in " << delete_phase_duration << " ms ---" << endl;
-    // delete_tasks vector goes out of scope here.
-    // delete_workers vector goes out of scope here.
+    // // Join all Delete threads
+    // for (auto& t : delete_workers) t.join();
+    // auto delete_phase_end_time = chrono::steady_clock::now();
+    // auto delete_phase_duration = chrono::duration_cast<chrono::milliseconds>(delete_phase_end_time - delete_phase_start_time).count();
+    // cout << "--- Delete Phase Finished in " << delete_phase_duration << " ms ---" << endl;
+    // // delete_tasks vector goes out of scope here.
+    // // delete_workers vector goes out of scope here.
 
 
     auto total_program_execution_duration = chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now() - total_program_start_time).count();

@@ -197,11 +197,13 @@ private:
             std::cout << "Current file index: " << current_file_index_ << ", File size: " << f_size << std::endl;
 #endif
             if (ec) {
-                throw std::runtime_error("Failed to get file size: " + (date_dir / (std::to_string(current_file_index_) + ".txt")).string());
+                // throw std::runtime_error("Failed to get file size: " + (date_dir / (std::to_string(current_file_index_) + ".txt")).string());
+                goto create_file;
             }
 
             if (f_size >= MAX_LOG_FILE_SIZE) {
                 ++current_file_index_;
+create_file:
                 std::ofstream ofs((date_dir / (std::to_string(current_file_index_) + ".txt")).string(), std::ios::app);
                 if (!ofs.is_open()) {
                     throw std::runtime_error("Failed to create log file: " + (date_dir / (std::to_string(current_file_index_) + ".txt")).string());

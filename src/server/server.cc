@@ -1,41 +1,52 @@
 #include <grpcpp/grpcpp.h>
+#include <grpcpp/ext/proto_server_reflection_plugin.h>
+#include <grpcpp/server_builder.h>
+#include <grpcpp/server_context.h>
+#include <grpcpp/support/server_callback.h>
+
 #include <iostream>
 #include <memory>
 #include <thread>
+#include <chrono>
 
 #include "generated/file.grpc.pb.h"
-#include "AsyncCall.hpp"
+#include "AsyncUploadCall.hpp"
+#include "logger/AccessLogger.hpp"
+#include "logger/async_logger.hpp"
+
+using grpc::Server;
+using grpc::ServerBuilder;
+using grpc::CallbackServerContext;
+
+// 服务实现类，使用 callback API
+class CCcloudServiceImplCallback final : public CCcloud::FileService::ExperimentalCallbackService {
+public:
+    CCcloudServiceImplCallback() {
+    }
+
+    ~CCcloudServiceImplCallback() {
+    }
+
+    grpc::ServerReadReactor<CCcloud::UploadChunk>* Upload(
+        CallbackServerContext* context,
+        CCcloud::UploadResponse* response) override {
+        return new AsyncUploadCall(context, response);
+    }
+
+    // 如果你还有 Download/Delete 等方法也在 callback 模式中实现，应当添加它们的 override
+};
 
 int main() {
     std::string server_address("0.0.0.0:9527");
-    CCcloud::FileService::AsyncService service;
+    CCcloudServiceImplCallback service;
 
-    grpc::ServerBuilder builder;
+    ServerBuilder builder;
     builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
-    builder.RegisterService(&service);
+    builder.RegisterService(&service);  // 注册 callback service
 
-    std::unique_ptr<grpc::ServerCompletionQueue> cq = builder.AddCompletionQueue();
-    std::unique_ptr<grpc::Server> server = builder.BuildAndStart();
+    std::unique_ptr<Server> server(builder.BuildAndStart());
+    std::cout << "✅ Callback-based gRPC Server listening on " << server_address << std::endl;
 
-    std::cout << "✅ Async gRPC Server listening on " << server_address << std::endl;
-
-    new AsyncUploadCall(&service, cq.get());
-    new AsyncDownloadCall(&service, cq.get());
-    new AsyncDeleteCall(&service, cq.get());
-
-    const int kThreadCount = 24;
-    std::vector<std::thread> workers;
-    for (int i = 0; i < kThreadCount; ++i) {
-        workers.emplace_back([&cq]() {
-            void* tag;
-            bool ok;
-            while (cq->Next(&tag, &ok)) {
-                static_cast<CallBase*>(tag)->Proceed(ok);
-            }
-        });
-    }
-
-    for (auto& t : workers) t.join();
-
+    server->Wait();
     return 0;
 }
