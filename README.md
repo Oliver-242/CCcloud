@@ -178,6 +178,9 @@ All tests are conducted on a **local loopback setup**, with both server and clie
 | 400 MB    | 12         | Upload    | 3000 - 4000 |
 |           |            | Download  | 2000 - 3000 |
 |           |            | Delete    | 80 - 100    |
+| 4 GB      | 1          | Upload    | 2500 - 3500 |
+|           |            | Download  |             |
+|           |            | Dlete     |             |
 
 > These numbers serve as an early baseline and will be re-evaluated under more realistic environments and external network settings.
 
