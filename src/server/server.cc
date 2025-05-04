@@ -33,7 +33,11 @@ public:
         return new AsyncUploadCall(context, response);
     }
 
-    // 如果你还有 Download/Delete 等方法也在 callback 模式中实现，应当添加它们的 override
+    grpc::ServerWriteReactor<CCcloud::DownloadChunk>* Download(
+        CallbackServerContext* context,
+        const CCcloud::DownloadRequest* request) override {
+        return new AsyncDownloadCall(context, request);
+    }
 };
 
 int main() {

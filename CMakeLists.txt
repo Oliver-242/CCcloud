@@ -71,15 +71,12 @@ option(ENABLE_ASAN "Enable AddressSanitizer" OFF)
 if(ENABLE_ASAN)
     message(STATUS "AddressSanitizer ENABLE_ASAN option is ON. Adding sanitizer flags.")
 
-    # 为 CCcloud_server target 添加编译选项
-    # 这些标志对于 g++ (>= 4.8) 和 Clang 都有效
     target_compile_options(CCcloud_server PRIVATE
         -fsanitize=address
         -fno-omit-frame-pointer
         -g
     )
 
-    # 为 CCcloud_server target 添加链接选项
     target_link_options(CCcloud_server PRIVATE
         -fsanitize=address
     )

@@ -4,10 +4,10 @@
 #include <filesystem>
 #include <fstream>
 #include <chrono>
-#include <iostream> // Added for logging
 
 #include "generated/file.grpc.pb.h"
 #include "logger/AccessLogger.hpp"
+
 
 class AsyncUploadCall : public grpc::ServerReadReactor<CCcloud::UploadChunk> {
 public:
@@ -21,28 +21,30 @@ public:
         t0_ = std::chrono::steady_clock::now();
     }
 
-    /* 读取分片 */
+    ~AsyncUploadCall() override
+    {
+        if (ofs_.is_open()) {
+            ofs_.close();
+        }
+    }
+
     void OnReadDone(bool ok) override
     {
-        // Added log: Indicate OnReadDone call and status
-        // std::cout << "Server [" << uuid_ << "]: OnReadDone called with ok = " << (ok ? "true" : "false") << std::endl;
-
-        if (!ok) {                                // 收到 END_STREAM
-            // std::cout << "Server [" << uuid_ << "]: Received END_STREAM from client." << std::endl;
+        if (!ok) {
             finish_ok();
             return;
         }
 
-        if (!file_opened_) {                      // 第一次才建文件
+        if (!file_opened_) { // 第一次才建文件
             std::filesystem::path upload_dir = std::filesystem::current_path() / "uploads";
 
             try {
                 std::filesystem::create_directories(upload_dir);
             } catch (const std::filesystem::filesystem_error& e) {
-                finish_err("Failed to create upload directory");
+                finish_err(format_msg(uuid_, "Failed to create upload directory"));
                 return;
             } catch (const std::exception& e) {
-                finish_err("Failed to create upload directory (unknown)");
+                finish_err(format_msg(uuid_, "Failed to create upload directory (unknown)"));
                 return;
             }
 
@@ -50,8 +52,7 @@ public:
 
             ofs_.open(file_path, std::ios::binary | std::ios::trunc);
             if (!ofs_) {
-                std::cerr << "Server [" << uuid_ << "]: Failed to open file for writing: " << chunk_.filename() << std::endl;
-                finish_err("open failed");
+                finish_err(format_msg(uuid_, "Failed to open file for writing: " + chunk_.filename()));
                 return;
             }
             file_opened_ = true;
@@ -60,21 +61,15 @@ public:
         ofs_.write(chunk_.data().data(), chunk_.data().size());
 
         if (!ofs_) {
-             std::cerr << "Server [" << uuid_ << "]: File write failed for chunk." << std::endl;
-             finish_err("file write failed");
-             return;
+            finish_err(format_msg(uuid_, chunk_.filename() + " writes failed for chunk."));
+            return;
         }
 
         StartRead(&chunk_);
     }
 
-    /* 结束回调 */
     void OnDone() override
     {
-        if (ofs_.is_open()) {
-            ofs_.close();
-        }
-
         auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - t0_).count();
 
         if (status_.ok()) {
@@ -89,16 +84,36 @@ public:
 private:
     void finish_ok()
     {
+        resp_->set_success(true);
         resp_->set_message("upload complete");
         status_ = grpc::Status::OK;
         Finish(status_);
     }
+
     void finish_err(const std::string& msg)
     {
+        resp_->set_success(false);
+        resp_->set_message(msg);
         status_ = grpc::Status(grpc::StatusCode::INTERNAL, msg);
         Finish(status_);
     }
 
+    template <typename ... _Args>
+    std::string format_msg(std::string uuid, _Args&&... args)
+    {
+        std::ostringstream oss;
+
+        oss << "Server [" << uuid << "]";
+
+        if constexpr (sizeof...(_Args) > 0) {
+            ((oss << " " << std::forward<_Args>(args)), ...);
+        }
+
+        return oss.str();
+    }
+
+
+private:
     grpc::CallbackServerContext* ctx_;
     CCcloud::UploadResponse* resp_;
     CCcloud::UploadChunk chunk_;
