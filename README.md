@@ -172,15 +172,15 @@ All tests are conducted on a **local loopback setup**, with both server and clie
 
 | File Size | File Count | Operation | Time (ms)   |
 | --------- | ---------- | --------- | ----------- |
-| 4 MB      | 128        | Upload    | 500 - 600   |
-|           |            | Download  | 300 - 400   |
-|           |            | Delete    | 20 - 30     |
-| 400 MB    | 12         | Upload    | 3000 - 4000 |
-|           |            | Download  | 2000 - 3000 |
-|           |            | Delete    | 80 - 100    |
-| 4 GB      | 1          | Upload    | 2500 - 3500 |
-|           |            | Download  |             |
-|           |            | Dlete     |             |
+| 4 MB      | 128        | Upload    | ~400        |
+|           |            | Download  | ~400        |
+|           |            | Delete    | ~20         |
+| 400 MB    | 12         | Upload    | ~2500       |
+|           |            | Download  | ~2500       |
+|           |            | Delete    | ~60         |
+| 4 GB      | 1          | Upload    | ~2500       |
+|           |            | Download  | ~3000       |
+|           |            | Dlete     | ~200        |
 
 > These numbers serve as an early baseline and will be re-evaluated under more realistic environments and external network settings.
 
