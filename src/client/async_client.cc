@@ -7,9 +7,9 @@
 #include <memory>
 #include <chrono>
 #include <cstdlib>
-#include <cstring>
-#include <string>
 #include <stdexcept>
+#include <sstream>
+#include <fstream>
 #include <utility> // For std::move, std::min
 #include <numeric> // For std::iota
 
@@ -221,79 +221,96 @@ void run_upload_only(shared_ptr<TaskResource> task, int chunks, long long chunk_
 
 // Function to perform only the Download RPC for a task thread
 void run_download_only(shared_ptr<TaskResource> task) {
-     auto stub = CCcloud::FileService::NewStub(task->channel);
-     void* received_tag = nullptr;
-     bool ok_cq = false;
+    auto stub = CCcloud::FileService::NewStub(task->channel);
+    void* received_tag = nullptr;
+    bool ok_cq = false;
 
-     unique_ptr<ClientContext> download_ctx = make_unique<ClientContext>();
-     CCcloud::DownloadRequest download_request;
-     Status download_status; // Final status for the download RPC
-     unique_ptr<ClientAsyncReader<CCcloud::DownloadChunk>> download_reader; // Client side reader for server streaming
-     CCcloud::DownloadChunk download_chunk; // Reusable chunk message for receiving data
+    unique_ptr<ClientContext> download_ctx = make_unique<ClientContext>();
+    CCcloud::DownloadRequest download_request;
+    Status download_status; // Final status for the download RPC
+    unique_ptr<ClientAsyncReader<CCcloud::DownloadChunk>> download_reader; // Client side reader for server streaming
+    CCcloud::DownloadChunk download_chunk; // Reusable chunk message for receiving data
 
-     download_request.set_filename("test_" + to_string(task->id) + ".bin");
+    std::filesystem::path downloads_folder = "downloads";
+
+    if (!std::filesystem::exists(downloads_folder) || !std::filesystem::is_directory(downloads_folder)) {
+        std::filesystem::create_directories(downloads_folder);
+        std::cout << "[Task " << task->id << "] Created downloads directory." << std::endl;
+    }
+ 
+    std::stringstream ss;
+    ss << downloads_folder.string() << "/test_" << task->id << ".bin";
+    std::string output_filename = ss.str();
+ 
+    std::ofstream output_file(output_filename, std::ios::binary);
+    if (!output_file.is_open()) {
+        std::cerr << "[Task " << task->id << "] Download Failed: Failed to open output file: " << output_filename << std::endl;
+        return;
+    }
+
+    download_request.set_filename("test_" + to_string(task->id) + ".bin");
 
      // Initiate download call. Use task->self_ptr.get() as the tag.
-     download_reader = stub->AsyncDownload(download_ctx.get(), download_request, task->cq.get(), (void*)task->self_ptr.get());
+    download_reader = stub->AsyncDownload(download_ctx.get(), download_request, task->cq.get(), (void*)task->self_ptr.get());
 
      // Wait for AsyncDownload start
-      if (!task->cq->Next(&received_tag, &ok_cq) || !ok_cq) {
-         cerr << "[Task " << task->id << "] Download Failed: Failed to start download call or CQ shut down before start." << endl;
-         download_status = Status(grpc::StatusCode::INTERNAL, "Failed to initiate call");
-         goto download_cleanup; // Jump to cleanup
-     }
-     // assert(received_tag == (void*)task->self_ptr.get());
+    if (!task->cq->Next(&received_tag, &ok_cq) || !ok_cq) {
+        cerr << "[Task " << task->id << "] Download Failed: Failed to start download call or CQ shut down before start." << endl;
+        download_status = Status(grpc::StatusCode::INTERNAL, "Failed to initiate call");
+        goto download_cleanup; // Jump to cleanup
+    }
+    // assert(received_tag == (void*)task->self_ptr.get());
 
-     // Read chunks
-     while (true) {
-         // Initiate async read for the next chunk. Use task->self_ptr.get() as the tag.
-         download_reader->Read(&download_chunk, (void*)task->self_ptr.get());
-         // Wait for Read completion
-          if (!task->cq->Next(&received_tag, &ok_cq)) {
-              cerr << "[Task " << task->id << "] Download Failed: Failed waiting for Read completion or CQ shut down." << endl;
-              ok_cq = false; // CQ shutdown means fail
-              break; // Exit read loop
-          }
-          // assert(received_tag == (void*)task->self_ptr.get());
+    // Read chunks
+    while (true) {
+        // Initiate async read for the next chunk. Use task->self_ptr.get() as the tag.
+        download_reader->Read(&download_chunk, (void*)task->self_ptr.get());
+        // Wait for Read completion
+        if (!task->cq->Next(&received_tag, &ok_cq)) {
+            cerr << "[Task " << task->id << "] Download Failed: Failed waiting for Read completion or CQ shut down." << endl;
+            ok_cq = false; // CQ shutdown means fail
+            break; // Exit read loop
+        }
+        // assert(received_tag == (void*)task->self_ptr.get());
 
-         if (!ok_cq) {
-             // Read operation itself failed (!ok_cq). This indicates end of stream after the last message
-             // has been read, OR an error occurred during streaming.
-             break; // Exit read loop - normal end or error
-         }
+        if (!ok_cq) {
+            // Read operation itself failed (!ok_cq). This indicates end of stream after the last message
+            // has been read, OR an error occurred during streaming.
+            break; // Exit read loop - normal end or error
+        }
 
-         // ok_cq is true: Process received chunk data
-         // std::cout << "[Task " << task->id << "] Received " << download_chunk.data().size() << " bytes for download." << std::endl; // Optional log
-         // In a real app, you'd write this data to a file or process it.
-     }
+        output_file.write(download_chunk.data().data(), download_chunk.data().size());
+    }
 
-     // Finish download RPC (gets final status)
-     // This MUST be called after the read loop finishes (!ok_cq from Read) to get the final status.
-     // Use task->self_ptr.get() as the tag.
-     if (download_reader) {
-         download_reader->Finish(&download_status, (void*)task->self_ptr.get());
-         // Wait for Finish completion
-         if (!task->cq->Next(&received_tag, &ok_cq)) {
-              cerr << "[Task " << task->id << "] Download Failed: Failed waiting for Finish completion or CQ shut down." << endl;
-              // Status might not be set correctly if Finish wait failed.
-         }
-         // assert(received_tag == (void*)task->self_ptr.get());
-     } else {
-          download_status = Status(grpc::StatusCode::INTERNAL, "Download reader not initialized");
-     }
-
+    // Finish download RPC (gets final status)
+    // This MUST be called after the read loop finishes (!ok_cq from Read) to get the final status.
+    // Use task->self_ptr.get() as the tag.
+    if (download_reader) {
+        download_reader->Finish(&download_status, (void*)task->self_ptr.get());
+        // Wait for Finish completion
+        if (!task->cq->Next(&received_tag, &ok_cq)) {
+            cerr << "[Task " << task->id << "] Download Failed: Failed waiting for Finish completion or CQ shut down." << endl;
+            // Status might not be set correctly if Finish wait failed.
+        }
+        // assert(received_tag == (void*)task->self_ptr.get());
+    } else {
+        download_status = Status(grpc::StatusCode::INTERNAL, "Download reader not initialized");
+    }
 
 download_cleanup: // Label for cleanup within this function
-     if (download_status.ok()) {
-         cout << "[Task " << task->id << "] Download success." << endl;
-     } else {
-         cerr << "[Task " << task->id << "] Download failed: " << download_status.error_message() << endl;
-     }
+    if (output_file.is_open()) {
+        output_file.close();
+    }
 
-     // --- CQ Shutdown and Drain ---
-     shutdown_and_drain_cq(task);
+    if (download_status.ok()) {
+        cout << "[Task " << task->id << "] Download success." << endl;
+    } else {
+        cerr << "[Task " << task->id << "] Download failed: " << download_status.error_message() << endl;
+    }
+
+    // --- CQ Shutdown and Drain ---
+    shutdown_and_drain_cq(task);
 }
-
 
 // Function to perform only the Delete RPC for a task thread
 void run_delete_only(shared_ptr<TaskResource> task) {
@@ -375,63 +392,54 @@ int main(int argc, char** argv) {
     auto upload_phase_end_time = chrono::steady_clock::now();
     auto upload_phase_duration = chrono::duration_cast<chrono::milliseconds>(upload_phase_end_time - upload_phase_start_time).count();
     cout << "--- Upload Phase Finished in " << upload_phase_duration << " ms ---" << endl;
-    // upload_tasks vector goes out of scope here, cleaning up Upload TaskResources and their CQs.
-    // upload_workers vector goes out of scope here.
 
+    // --- DOWNLOAD PHASE ---
+    cout << "\n--- Starting Download Phase ---" << endl;
+    auto download_phase_start_time = chrono::steady_clock::now();
+    vector<thread> download_workers;
+    vector<shared_ptr<TaskResource>> download_tasks; // Resources for download phase
 
-    // // --- DOWNLOAD PHASE ---
-    // cout << "\n--- Starting Download Phase ---" << endl;
-    // auto download_phase_start_time = chrono::steady_clock::now();
-    // vector<thread> download_workers;
-    // vector<shared_ptr<TaskResource>> download_tasks; // Resources for download phase
+    for (int i = 0; i < concurrency; ++i) {
+        auto task = make_shared<TaskResource>();
+        task->id = i;
+        task->channel = channel;
+        task->cq = make_unique<CompletionQueue>(); // Create a unique CQ for this task thread
+        task->self_ptr = task; // Set the self-reference shared_ptr for the tag
+        download_tasks.push_back(task); // Store the task resource
 
-    // for (int i = 0; i < concurrency; ++i) {
-    //     auto task = make_shared<TaskResource>();
-    //     task->id = i;
-    //     task->channel = channel;
-    //     task->cq = make_unique<CompletionQueue>(); // Create a unique CQ for this task thread
-    //     task->self_ptr = task; // Set the self-reference shared_ptr for the tag
-    //     download_tasks.push_back(task); // Store the task resource
+        // Create a thread and pass the shared_ptr<TaskResource> by value (copied).
+        download_workers.emplace_back(run_download_only, task);
+    }
 
-    //     // Create a thread and pass the shared_ptr<TaskResource> by value (copied).
-    //     download_workers.emplace_back(run_download_only, task);
-    // }
+    // Join all Download threads
+    for (auto& t : download_workers) t.join();
+    auto download_phase_end_time = chrono::steady_clock::now();
+    auto download_phase_duration = chrono::duration_cast<chrono::milliseconds>(download_phase_end_time - download_phase_start_time).count();
+    cout << "--- Download Phase Finished in " << download_phase_duration << " ms ---" << endl;
 
-    // // Join all Download threads
-    // for (auto& t : download_workers) t.join();
-    // auto download_phase_end_time = chrono::steady_clock::now();
-    // auto download_phase_duration = chrono::duration_cast<chrono::milliseconds>(download_phase_end_time - download_phase_start_time).count();
-    // cout << "--- Download Phase Finished in " << download_phase_duration << " ms ---" << endl;
-    // // download_tasks vector goes out of scope here.
-    // // download_workers vector goes out of scope here.
+    // --- DELETE PHASE ---
+    cout << "\n--- Starting Delete Phase ---" << endl;
+    auto delete_phase_start_time = chrono::steady_clock::now();
+    vector<thread> delete_workers;
+    vector<shared_ptr<TaskResource>> delete_tasks; // Resources for delete phase
 
+    for (int i = 0; i < concurrency; ++i) {
+        auto task = make_shared<TaskResource>();
+        task->id = i;
+        task->channel = channel;
+        task->cq = make_unique<CompletionQueue>(); // Create a unique CQ for this task thread
+        task->self_ptr = task; // Set the self-reference shared_ptr for the tag
+        delete_tasks.push_back(task); // Store the task resource
 
-    // // --- DELETE PHASE ---
-    // cout << "\n--- Starting Delete Phase ---" << endl;
-    // auto delete_phase_start_time = chrono::steady_clock::now();
-    // vector<thread> delete_workers;
-    // vector<shared_ptr<TaskResource>> delete_tasks; // Resources for delete phase
+        // Create a thread and pass the shared_ptr<TaskResource> by value (copied).
+        delete_workers.emplace_back(run_delete_only, task);
+    }
 
-    // for (int i = 0; i < concurrency; ++i) {
-    //     auto task = make_shared<TaskResource>();
-    //     task->id = i;
-    //     task->channel = channel;
-    //     task->cq = make_unique<CompletionQueue>(); // Create a unique CQ for this task thread
-    //     task->self_ptr = task; // Set the self-reference shared_ptr for the tag
-    //     delete_tasks.push_back(task); // Store the task resource
-
-    //     // Create a thread and pass the shared_ptr<TaskResource> by value (copied).
-    //     delete_workers.emplace_back(run_delete_only, task);
-    // }
-
-    // // Join all Delete threads
-    // for (auto& t : delete_workers) t.join();
-    // auto delete_phase_end_time = chrono::steady_clock::now();
-    // auto delete_phase_duration = chrono::duration_cast<chrono::milliseconds>(delete_phase_end_time - delete_phase_start_time).count();
-    // cout << "--- Delete Phase Finished in " << delete_phase_duration << " ms ---" << endl;
-    // // delete_tasks vector goes out of scope here.
-    // // delete_workers vector goes out of scope here.
-
+    // Join all Delete threads
+    for (auto& t : delete_workers) t.join();
+    auto delete_phase_end_time = chrono::steady_clock::now();
+    auto delete_phase_duration = chrono::duration_cast<chrono::milliseconds>(delete_phase_end_time - delete_phase_start_time).count();
+    cout << "--- Delete Phase Finished in " << delete_phase_duration << " ms ---" << endl;
 
     auto total_program_execution_duration = chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now() - total_program_start_time).count();
     cout << "\n--- All Phases Completed ---" << endl;

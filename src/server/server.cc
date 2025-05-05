@@ -10,9 +10,9 @@
 #include <chrono>
 
 #include "generated/file.grpc.pb.h"
-#include "AsyncUploadCall.hpp"
+#include "AsyncCall.hpp"
 #include "logger/AccessLogger.hpp"
-#include "logger/async_logger.hpp"
+
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -38,6 +38,13 @@ public:
         const CCcloud::DownloadRequest* request) override {
         return new AsyncDownloadCall(context, request);
     }
+
+    grpc::ServerUnaryReactor* Delete(
+        CallbackServerContext* context,
+        const CCcloud::DeleteRequest* request, 
+        CCcloud::DeleteResponse* response) override {
+        return new AsyncDeleteCall(context, request, response);
+    }
 };
 
 int main() {
@@ -46,7 +53,7 @@ int main() {
 
     ServerBuilder builder;
     builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
-    builder.RegisterService(&service);  // 注册 callback service
+    builder.RegisterService(&service);
 
     std::unique_ptr<Server> server(builder.BuildAndStart());
     std::cout << "✅ Callback-based gRPC Server listening on " << server_address << std::endl;

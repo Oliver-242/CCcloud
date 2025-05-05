@@ -11,11 +11,11 @@
 #include "logger/AccessLogger.hpp"
 
 
-class AsyncDownloadCall : public ServerWriteReactor<CCcloud::DownloadChunk> {
+class AsyncDownloadCall : public grpc::ServerWriteReactor<CCcloud::DownloadChunk> {
 public:
     AsyncDownloadCall(grpc::CallbackServerContext* ctx,
-                      CCcloud::DownloadChunk* dchunk)
-        : ctx_(ctx), dchunk_(dchunk)
+                      const CCcloud::DownloadRequest* request)
+        : ctx_(ctx), req_(request)
     {
         uuid_ = AccessLogger::generate_uuid();
         AccessLogger::log_prepare(uuid_, ctx_, OperationType::DOWNLOAD, "download started");
@@ -30,7 +30,7 @@ public:
         }
     }
 
-    OnWriteDone(bool ok) override
+    void OnWriteDone(bool ok) override
     {
         if (!ok) {
             finish_ok();
@@ -38,11 +38,11 @@ public:
         }
 
         if (!ifs_.is_open()) {
-            std::filesystem::path file_path("upload" + dreq_->filename());
+            std::filesystem::path file_path("uploads/" + req_->filename());
             ifs_.open(file_path, std::ios::binary);
 
             if (!ifs_.is_open()) {
-                finish_err(format_msg(uuid_, "Failed to open file " + dreq_->filename()));
+                finish_err(format_msg(uuid_, "Failed to open file " + req_->filename()));
                 return;
             }
         }
@@ -51,15 +51,15 @@ public:
         std::streamsize bytes_read = ifs_.gcount();
     
         if (bytes_read > 0) {
-            dchunk_->set_data(buffer_, bytes_read);
+            dchunk_.set_data(buffer_, bytes_read);
             StartWrite(&dchunk_);
         } else {
             if (ifs_.eof()) {
                 finish_ok();
             } else if (ifs_.fail() || ifs_.bad()) {
-                finish_err(format_msg(uuid_, "Error reading from file " + dreq_->filename()));
+                finish_err(format_msg(uuid_, "Error reading from file " + req_->filename()));
             } else {
-                 finish_err(format_msg(uuid_, "Unexpected state after reading 0 bytes from file " + dreq_->filename()));
+                 finish_err(format_msg(uuid_, "Unexpected state after reading 0 bytes from file " + req_->filename()));
             }
             ifs_.close();
         }
@@ -82,13 +82,13 @@ private:
     void finish_ok()
     {
         status_ = grpc::Status::OK;
-        ctx_->Finish(status_);
+        Finish(status_);
     }
 
     void finish_err(const std::string& msg)
     {
         status_ = grpc::Status(grpc::StatusCode::INTERNAL, msg);
-        ctx_->Finish(status_);
+        Finish(status_);
     }
 
     template <typename ... _Args>
@@ -107,8 +107,8 @@ private:
 
 private:
     grpc::CallbackServerContext* ctx_;
-    CCcloud::DownloadChunk* dchunk_;
-    CCcloud::DownloadRequest* dreq_;
+    const CCcloud::DownloadRequest* req_;
+    CCcloud::DownloadChunk dchunk_;
 
     std::ifstream ifs_;
 
