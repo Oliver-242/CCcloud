@@ -1,12 +1,12 @@
-# CCcloud - Cloud Storage System (In Progress)
+# CCcloud - Cloud Storage System
 
-Personal Project: High-performance cloud storage service with asynchronous logging and scalable multi-protocol interfaces.
+Personal Project: High-performance cloud storage service with asynchronous logging and scalable interfaces.
 
 ---
 
 ## 📖 Project Overview
 
-This project aims to build a lightweight, **high-performance cloud storage system**, providing robust support for **large-scale concurrent file uploads** over both **gRPC** and **HTTP** protocols.
+This project aims to build a lightweight, **high-performance cloud storage system**, providing robust support for **large-scale concurrent file uploads** over **gRPC** protocol.
 
 The current repository contains the first foundational component:
 a **high-throughput asynchronous logger**, designed to support internal system logging, access auditing, and fault diagnosis without impacting service performance.
@@ -39,8 +39,7 @@ The asynchronous logger module has been thoroughly stress-tested and will be int
 
 * **File Upload Service**:
 
-  * Support **RPC API** for high-efficiency streaming uploads.
-  * Support **HTTP API** for wide client compatibility.
+  * Support **gRPC API** for high-efficiency streaming uploads.
 
 * **Cloud Storage Core**
 
@@ -97,13 +96,14 @@ git clone <repo_url>
 
 ```bash
 mkdir build
-cd build
 ```
 
 ### 3. Configure the project with CMake and build the project
 
 ```bash
-cmake .. && make
+cmake --preset default
+cd build
+make -j 24
 ```
 
 ### 4. Run the logger test
@@ -190,6 +190,6 @@ All tests are conducted on a **local loopback setup**, with both server and clie
 
 Once the full cloud storage server is completed, additional benchmarks will be conducted to measure:
 
-* Full pipeline upload throughput (**RPC / HTTP**)
+* Full pipeline transfer throughput (**RPC**)
 * Metadata storage latency
 * Node replication and sharding performance
